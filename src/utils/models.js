@@ -1,6 +1,6 @@
 export const modelUrls = {
     'tiny.en':  'https://whisper.ggerganov.com/ggml-model-whisper-tiny.en.bin',
-    'tiny':     'https://whisper.ggerganov.com/ggml-model-whisper-tiny.bin',
+    'tiny':     'http://localhost:3001/models/ggml-model-whisper-tiny.bin',  // 'https://whisper.ggerganov.com/ggml-model-whisper-tiny.bin',
     'base.en':  'https://whisper.ggerganov.com/ggml-model-whisper-base.en.bin',
     'base':     'https://whisper.ggerganov.com/ggml-model-whisper-base.bin',
     'small.en': 'https://whisper.ggerganov.com/ggml-model-whisper-small.en.bin',
@@ -45,7 +45,6 @@ export const fetchModel = (modelName) => {
             modelUrl,
             {
                 method: 'GET',
-                mode: 'no-cors',
                 headers: {
                     'Content-Type': 'application/octet-stream',
                 },
