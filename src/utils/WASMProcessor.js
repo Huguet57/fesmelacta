@@ -12,16 +12,14 @@ export class WASMProcessor {
             4;
         this.translate = false;
 
-        this.Module = {
-            print: console.log, // printTextarea,
-            printErr: console.log, // printTextarea,
-            setStatus: function(text) {
-                console.log('js:', text);
-                // printTextarea('js: ' + text);
-            },
-            monitorRunDependencies: function(left) {
-            }
-        };
+        // Module initialization
+        window.Module.print = console.log;
+        window.Module.printErr = console.log;
+        window.Module.setStatus = function(text) {
+            console.log('js:', text);
+        }
+        window.Module.monitorRunDependencies = function(left) {
+        }
     }
 
     async loadAudioChunk() {
@@ -45,16 +43,16 @@ export class WASMProcessor {
 
     async storeModel(buf, fname='whisper.bin') {
         try {
-            this.Module.FS_unlink(fname);
+            window.Module.FS_unlink(fname);
         } catch (e) {
             // ignore
         }
 
-        this.Module.FS_createDataFile("/", fname, buf, true, true);
+        window.Module.FS_createDataFile("/", fname, buf, true, true);
     }
 
     async loadInstance() {
-        this.instance = this.Module.init('whisper.bin');
+        this.instance = window.Module.init('whisper.bin');
     }
 
     async processAudio() {
@@ -64,7 +62,7 @@ export class WASMProcessor {
             const audioFound = await this.loadAudioChunk()
             if (!audioFound) break;
 
-            const result = this.Module.full_default(
+            const result = window.Module.full_default(
                 this.instance, 
                 this.audioChunk, 
                 this.language, 
