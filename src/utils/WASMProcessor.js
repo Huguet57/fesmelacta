@@ -63,7 +63,7 @@ export class WASMProcessor {
                     resolve(true);
                 })
                 .catch(err => {
-                    console.error('Error reading chunk from IndexedDB', err);
+                    // console.error('Error reading chunk from IndexedDB', err);
                     reject(err);
                 });
         });

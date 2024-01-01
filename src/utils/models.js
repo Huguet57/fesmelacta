@@ -52,7 +52,7 @@ export const fetchModel = (modelName) => {
         );
 
         if (!response.ok) {
-            console.error('fetchModel: failed to fetch ' + modelUrl);
+            // console.error('fetchModel: failed to fetch ' + modelUrl);
             reject(null);
             return;
         }

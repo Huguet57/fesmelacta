@@ -9,7 +9,7 @@ const saveModelToIndexedDB = async (model) => {
         await localForage.setItem('model', model);
         return true;
     } catch (err) {
-        console.error('Error saving model to IndexedDB', err);
+        // console.error('Error saving model to IndexedDB', err);
         return false;
     }
 };
@@ -19,7 +19,7 @@ const loadModelFromIndexedDB = async () => {
         const model = await localForage.getItem('model');
         return model;
     } catch (err) {
-        console.error('Error loading model from IndexedDB', err);
+        // console.error('Error loading model from IndexedDB', err);
         return null;
     }
 }
@@ -31,7 +31,7 @@ const saveFileToIndexedDB = async (file) => {
         currentChunkIndex = 0; // Reset the read position whenever a new file is saved
         return true;
     } catch (err) {
-        console.error('Error saving file to IndexedDB', err);
+        // console.error('Error saving file to IndexedDB', err);
         return false;
     }
 };

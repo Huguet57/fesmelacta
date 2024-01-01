@@ -60,7 +60,7 @@ const decodeAudioData = async (file) => {
                     resolve(chunkData);
                 });
             }, function(e) {
-                console.log(e);
+                // console.log(e);
                 reject(e);
             });
         }
