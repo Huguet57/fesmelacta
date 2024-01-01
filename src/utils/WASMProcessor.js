@@ -74,20 +74,20 @@ export class WASMProcessor {
     async processAudio() {
         this.loadInstance();
 
-        // while (true) {
+        while (true) {
             const audioFound = await this.loadAudioChunk()
-            // if (!audioFound) break;
+            if (!audioFound) break;
 
             this.showAudio();
 
-            const result = window.Module.full_default(
-                this.instance, 
-                this.chunkData, 
-                this.language, 
-                this.nthreads,
-                this.translate,
-            )
-        // }
+            // const result = window.Module.full_default(
+            //     this.instance, 
+            //     this.chunkData, 
+            //     this.language, 
+            //     this.nthreads,
+            //     this.translate,
+            // )
+        }
     }
 
     async process() {

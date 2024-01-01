@@ -9,6 +9,11 @@ const getIthChunk = async (i) => {
             reader.onload = async (event) => {
                 const audioData = reader.result;
 
+                if (i * chunkSize >= audioData.byteLength) {
+                    resolve(null);
+                    return;
+                }
+
                 const header = audioData.slice(0, 44); // Get the header of the file
                 let chunk = audioData.slice(i * chunkSize, (i + 1) * chunkSize);
                 

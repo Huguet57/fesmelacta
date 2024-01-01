@@ -43,7 +43,7 @@ const readNextChunkFromIndexedDB = async () => {
         const chunkData = await decodeAudioData(chunk);
         return [chunk, chunkData];
     } catch (err) {
-        console.error('Error reading chunk from IndexedDB', err);
+        // console.error('Error reading chunk from IndexedDB', err);
         return [null, null];
     }
 };
