@@ -1,14 +1,26 @@
 import localforage from "localforage";
 
-const getIthChunk = async (i, chunkSize) => {
-    const audioFile = await localforage.getItem('file');
-    return new Blob([audioFile]);
+const getIthChunk = async (i) => {
+    return new Promise((resolve, reject) => {
+        const chunkSize = 1 * 1024 * 1024;
+        localforage.getItem('file').then(file => {
+            const reader = new FileReader();
 
-    const header = audioFile.slice(0, 44); // Get the header of the file
-    let chunk = audioFile.slice(i * chunkSize, (i + 1) * chunkSize);
-    
-    if (i !== 0) return new Blob([header, chunk]);
-    else return new Blob([chunk]);
+            reader.onload = async (event) => {
+                const audioData = reader.result;
+
+                const header = audioData.slice(0, 44); // Get the header of the file
+                let chunk = audioData.slice(i * chunkSize, (i + 1) * chunkSize);
+                
+                if (i !== 0) resolve(new Blob([header, chunk], {type: 'audio/wav'}));
+                else resolve(new Blob([chunk], {type: 'audio/wav'}));
+            }
+
+            reader.readAsArrayBuffer(file);
+        }).catch(err => {
+            reject(err);
+        });
+    });
 }
 
 const decodeAudioData = async (file) => {
