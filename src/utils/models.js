@@ -45,6 +45,7 @@ export const fetchModel = (modelName) => {
             modelUrl,
             {
                 method: 'GET',
+                mode: 'no-cors',
                 headers: {
                     'Content-Type': 'application/octet-stream',
                 },
@@ -54,6 +55,7 @@ export const fetchModel = (modelName) => {
         if (!response.ok) {
             console.error('fetchModel: failed to fetch ' + modelUrl);
             reject(null);
+            return;
         }
 
         const chunks = [];

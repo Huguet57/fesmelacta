@@ -31,15 +31,13 @@ const ModelLoader = ({ processor, success, error }) => {
                     success();
               })
               .catch(err => {
-                    console.log(err);
                     setLoading(false);
-                    error();
+                    error(err);
                 });
       }
     } catch (err) {
-      console.log(err);
       setLoading(false);
-      error();
+      error(err);
     }
   };
 

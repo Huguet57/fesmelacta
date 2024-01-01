@@ -12,8 +12,8 @@ const AudioProcessor = () => {
 
     return (
         <div>
-            <ModelLoader processor={processor} success={() => setIsModelLoaded(true)} />
-            <FileUploader processor={processor} success={() => setIsAudioLoaded(true)} />
+            <ModelLoader processor={processor} success={() => setIsModelLoaded(true)} error={(err) => console.error(err)} />
+            <FileUploader processor={processor} success={() => setIsAudioLoaded(true)} error={(err) => console.error(err)} />
             <Processor processor={processor} isModelLoaded={isModelLoaded} isAudioLoaded={isAudioLoaded} />
         </div>
     );
