@@ -23,6 +23,19 @@ export class WASMProcessor {
         }
     }
 
+    async printAndCheck(str) {
+        const finish_commands = [
+            'whisper_print_timings:',
+        ]
+
+        if (finish_commands.some(cmd => str.includes(cmd))) {
+            this.processNextAudio();
+            return;
+        }
+
+        console.log(str);
+    }
+
     async loadAudioChunk() {
         return new Promise((resolve, reject) => {
             readNextChunkFromIndexedDB()
@@ -71,27 +84,25 @@ export class WASMProcessor {
         document.body.appendChild(el);
     }
 
-    async processAudio() {
+    async processNextAudio() {
         this.loadInstance();
 
-        while (true) {
-            const audioFound = await this.loadAudioChunk()
-            if (!audioFound) break;
+        const audioFound = await this.loadAudioChunk()
+        if (!audioFound) return;
 
-            this.showAudio();
+        this.showAudio();
 
-            // const result = window.Module.full_default(
-            //     this.instance, 
-            //     this.chunkData, 
-            //     this.language, 
-            //     this.nthreads,
-            //     this.translate,
-            // )
-        }
+        const result = window.Module.full_default(
+            this.instance, 
+            this.chunkData, 
+            this.language, 
+            this.nthreads,
+            this.translate,
+        )
     }
 
     async process() {
-        this.processAudio();
+        this.processNextAudio();
     }
 
     async setModel(model) {
