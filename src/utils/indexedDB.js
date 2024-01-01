@@ -1,5 +1,5 @@
 import localForage from "localforage";
-import { chunkAudioFile, getIthChunk } from './chunking';
+import { chunkAudioFile, decodeAudioData, getIthChunk } from './chunking';
 
 let currentChunkIndex = 0;
 const CHUNK_SIZE = 1024; // Define your chunk size here
@@ -39,11 +39,12 @@ const saveFileToIndexedDB = async (file) => {
 // Read the next chunk of the audio file from IndexedDB
 const readNextChunkFromIndexedDB = async () => {
     try {
-        const file = await localForage.getItem('audioFile');
-        return getIthChunk(file, currentChunkIndex++, CHUNK_SIZE);
+        const chunk = await getIthChunk(currentChunkIndex++, CHUNK_SIZE);
+        const [chunkAudio, chunkData] = await decodeAudioData(chunk);
+        return [chunkAudio, chunkData];
     } catch (err) {
         console.error('Error reading chunk from IndexedDB', err);
-        return null;
+        return [null, null];
     }
 };
 

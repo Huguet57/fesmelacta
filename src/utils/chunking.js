@@ -1,9 +1,14 @@
-const getIthChunk = (audioFile, i, chunkSize) => {
+import localforage from "localforage";
+
+const getIthChunk = async (i, chunkSize) => {
+    const audioFile = await localforage.getItem('audioFile');
+    return new Blob([audioFile]);
+
     const header = audioFile.slice(0, 44); // Get the header of the file
     let chunk = audioFile.slice(i * chunkSize, (i + 1) * chunkSize);
     
     if (i !== 0) return new Blob([header, chunk]);
-    else return chunk;
+    else return new Blob([chunk]);
 }
 
 const decodeAudioData = async (audioData) => {
@@ -15,9 +20,9 @@ const decodeAudioData = async (audioData) => {
             // Create an AudioContext instance
             let audioContext = new (window.AudioContext || window.webkitAudioContext)();
             // Decode the audio data from the chunk
-            audioContext.decodeAudioData(event.target.result, (buffer) => {
+            audioContext.decodeAudioData(reader.result, (buffer) => {
                 const decodedData = buffer.getChannelData(0);
-                resolve(decodedData);
+                resolve([reader.result, decodedData]);
             }, (error) => {
                 console.error('Error decoding audio data', error);
                 reject(error);

@@ -1,11 +1,11 @@
-import { decodeAudioData } from "./chunking";
 import { readNextChunkFromIndexedDB } from "./indexedDB";
 
 export class WASMProcessor {
     constructor() {
         this.currentChunk = 0;
         this.instance = null;
-        this.audioChunk = null;
+        this.chunkData = null;
+        this.audio = null;
         this.language = 'ca';
         this.nthreads = navigator.hardwareConcurrency ?
             Math.max(1, Math.floor(navigator.hardwareConcurrency * 0.8)) :
@@ -14,7 +14,7 @@ export class WASMProcessor {
 
         // Module initialization
         window.Module.print = console.log;
-        window.Module.printErr = console.log;
+        window.Module.printErr = console.error;
         window.Module.setStatus = function(text) {
             console.log('js:', text);
         }
@@ -25,13 +25,14 @@ export class WASMProcessor {
     async loadAudioChunk() {
         return new Promise((resolve, reject) => {
             readNextChunkFromIndexedDB()
-                .then(async chunk => {
-                    if (!chunk) {
+                .then(async ([chunkAudio, chunkData]) => {
+                    if (!chunkData) {
                         console.log("All chunks processed.");
                         resolve(false);
                     }
 
-                    this.audioChunk = await decodeAudioData(chunk);
+                    this.audio = chunkAudio;
+                    this.chunkData = chunkData;
                     resolve(true);
                 })
                 .catch(err => {
@@ -55,25 +56,34 @@ export class WASMProcessor {
         this.instance = window.Module.init('whisper.bin');
     }
 
+    showAudio() {
+        const el = document.createElement('audio');
+        el.controls = true;
+        el.src = this.audio;
+        document.body.appendChild(el);
+    }
+
     async processAudio() {
         this.loadInstance();
 
-        while (true) {
+        // while (true) {
             const audioFound = await this.loadAudioChunk()
-            if (!audioFound) break;
+            // if (!audioFound) break;
+
+            this.showAudio();
 
             const result = window.Module.full_default(
                 this.instance, 
-                this.audioChunk, 
+                this.chunkData, 
                 this.language, 
                 this.nthreads,
                 this.translate,
             )
-        }
+        // }
     }
 
     async process() {
-        await this.processAudio();
+        this.processAudio();
     }
 
     async setModel(model) {

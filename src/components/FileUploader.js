@@ -5,8 +5,7 @@ const FileUploader = ({ processor, success, error }) => {
     const saveFileToDB = async (file) => {
         const reader = new FileReader();
         reader.onload = async (event) => {
-            const audioData = event.target.result;
-            saveFileToIndexedDB(audioData);
+            saveFileToIndexedDB(reader.result);
             success();
         };
 
