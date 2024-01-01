@@ -1,7 +1,7 @@
 import localforage from "localforage";
 
 const getIthChunk = async (i, chunkSize) => {
-    const audioFile = await localforage.getItem('audioFile');
+    const audioFile = await localforage.getItem('file');
     return new Blob([audioFile]);
 
     const header = audioFile.slice(0, 44); // Get the header of the file
@@ -11,31 +11,44 @@ const getIthChunk = async (i, chunkSize) => {
     else return new Blob([chunk]);
 }
 
-const decodeAudioData = async (audioData) => {
+const decodeAudioData = async (file) => {
+    const kSampleRate = 16000;
+
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    window.OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+
+    const context = new AudioContext({
+        sampleRate: kSampleRate,
+        channelCount: 1,
+        echoCancellation: false,
+        autoGainControl:  true,
+        noiseSuppression: true,
+    });
+
     return new Promise((resolve, reject) => {
-        // Create a FileReader instance
-        const reader = new FileReader();
+        var reader = new FileReader();
 
-        reader.onload = (event) => {
-            // Create an AudioContext instance
-            let audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            // Decode the audio data from the chunk
-            audioContext.decodeAudioData(reader.result, (buffer) => {
-                const decodedData = buffer.getChannelData(0);
-                resolve([reader.result, decodedData]);
-            }, (error) => {
-                console.error('Error decoding audio data', error);
-                reject(error);
+        reader.onload = function(event) {
+            var buf = new Uint8Array(reader.result);
+
+            context.decodeAudioData(buf.buffer, function(audioBuffer) {
+                var offlineContext = new OfflineAudioContext(audioBuffer.numberOfChannels, audioBuffer.length, audioBuffer.sampleRate);
+                var source = offlineContext.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(offlineContext.destination);
+                source.start(0);
+
+                offlineContext.startRendering().then(function(renderedBuffer) {
+                    const chunkData = renderedBuffer.getChannelData(0);
+                    resolve(chunkData);
+                });
+            }, function(e) {
+                console.log(e);
+                reject(e);
             });
-        };
-
-        reader.onerror = (event) => {
-            console.error('Error reading file', event);
-            reject(event);
         }
 
-        // Read the audio data as an ArrayBuffer
-        reader.readAsArrayBuffer(audioData);
+        reader.readAsArrayBuffer(file);
     });
 }
 

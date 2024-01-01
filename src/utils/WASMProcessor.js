@@ -1,3 +1,4 @@
+import localforage from "localforage";
 import { readNextChunkFromIndexedDB } from "./indexedDB";
 
 export class WASMProcessor {
@@ -56,10 +57,17 @@ export class WASMProcessor {
         this.instance = window.Module.init('whisper.bin');
     }
 
-    showAudio() {
+    async showAudio() {
         const el = document.createElement('audio');
         el.controls = true;
-        el.src = this.audio;
+
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            el.src = reader.result;
+        };
+
+        reader.readAsDataURL(this.audio);
+
         document.body.appendChild(el);
     }
 
