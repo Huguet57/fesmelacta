@@ -2,7 +2,7 @@ import localforage from "localforage";
 
 const getIthChunk = async (i) => {
     return new Promise((resolve, reject) => {
-        const chunkSize = 30 * 1024 * 1024;
+        const chunkSize = 0.25 * 1024 * 1024;
         localforage.getItem('file').then(file => {
             const reader = new FileReader();
 
