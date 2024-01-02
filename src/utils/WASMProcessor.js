@@ -30,6 +30,7 @@ export class WASMProcessor {
         this.linesCallback = null;
         this.audioPartsCallback = null;
         this.fullAudioCallback = null;
+        this.changeState = null;
     }
 
     async printAndCheck(str) {
@@ -97,7 +98,7 @@ export class WASMProcessor {
             readNextChunkFromIndexedDB()
                 .then(async ([chunkAudio, chunkData]) => {
                     if (!chunkData) {
-                        console.log("All chunks processed.");
+                        this.changeState(7); // Transcripció finalitzada
                         resolve(false);
                     }
 
@@ -179,6 +180,8 @@ export class WASMProcessor {
 
         // this.showAudioPart();
 
+        setTimeout(() => this.changeState(5), 2000); // Àudio processat. Comença la transcripció...
+
         const result = window.Module.full_default(
             this.instance, 
             this.chunkData, 
@@ -186,9 +189,13 @@ export class WASMProcessor {
             this.nthreads,
             this.translate,
         )
+
+        setTimeout(() => this.changeState(6), 10000); // Transcripció en curs...
     }
 
     async process() {
+        this.changeState(4); // Processant àudio...
+
         this.showFullAudio()
             .then(() => {
                 this.processNextAudio();
@@ -206,10 +213,11 @@ export class WASMProcessor {
         this.language = language;
     }
 
-    setOutput({ lines, audioParts, fullAudio }) {
+    setOutput({ lines, audioParts, fullAudio, changeState }) {
         this.linesCallback = lines;
         this.audioPartsCallback = audioParts;
         this.fullAudioCallback = fullAudio;
+        this.changeState = changeState;
     }
 
 }
