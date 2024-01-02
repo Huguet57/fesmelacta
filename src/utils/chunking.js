@@ -15,10 +15,12 @@ const getIthChunk = async (i) => {
                 }
 
                 const header = audioData.slice(0, 44); // Get the header of the file
-                let chunk = audioData.slice(i * chunkSize, (i + 1) * chunkSize);
+                let chunk = audioData.slice(i * chunkSize + (i === 0 ? 44 : 0), (i + 1) * chunkSize);
+
+                // Hack per que no passi lo que el primer chunk posa que dura tot el fitxer
+                if (file.type === 'audio/mpeg') chunk = audioData.slice(i * chunkSize + 44 + 1, (i + 1) * chunkSize);
                 
-                if (i !== 0) resolve(new Blob([header, chunk], {type: 'audio/wav'}));
-                else resolve(new Blob([chunk], {type: 'audio/wav'}));
+                resolve(new Blob([header, chunk], {type: file.type}));
             }
 
             reader.readAsArrayBuffer(file);
