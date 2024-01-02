@@ -59,8 +59,32 @@ export class WASMProcessor {
             return;
         }
 
-        // document.body.innerHTML += str + '<br>';
-        this.linesCallback(str);
+        // Adjust the subtitle timings
+        const adjustedStr = this.adjustSubtitles(str, this.audioOffset);
+        this.linesCallback(adjustedStr);
+    }
+
+    adjustSubtitles(str, offset) {
+        function convertToMs(timestamp) {
+            const [hours, minutes, seconds] = timestamp.split(':').map(Number);
+            return (hours * 3600 + minutes * 60 + seconds) * 1000;
+        }
+    
+        function convertToTimestamp(milliseconds) {
+            const hours = Math.floor(milliseconds / 3600000);
+            const minutes = Math.floor((milliseconds % 3600000) / 60000);
+            const seconds = Math.floor((milliseconds % 60000) / 1000);
+            const ms = milliseconds % 1000;
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${ms.toString().padStart(3, '0')}`;
+        }
+
+        const offsetInSeconds = offset * 1000; // Convert offset to milliseconds
+        return str.replace(/\[([\d:.]+) --> ([\d:.]+)\]/g, (match, start, end) => {
+            // Convert timestamps to milliseconds, add offset, and convert back to timestamp format
+            const adjustedStart = convertToTimestamp(convertToMs(start) + offsetInSeconds);
+            const adjustedEnd = convertToTimestamp(convertToMs(end) + offsetInSeconds);
+            return `[${adjustedStart} --> ${adjustedEnd}]`;
+        });
     }
 
     async loadAudioChunk() {
