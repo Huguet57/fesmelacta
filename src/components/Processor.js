@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 
-const Processor = ({ processor, isAudioLoaded, isModelLoaded }) => {
+const Processor = ({ processor, state }) => {
+    const isReady = state === 3;
+
     const handleClick = () => {
-        if (isAudioLoaded && isModelLoaded) {
+        if (isReady) {
             processor?.process();
         }
     };
 
     return (
-        <button onClick={handleClick} disabled={!isAudioLoaded || !isModelLoaded}>
+        <button onClick={handleClick} disabled={!isReady}>
             Transcriu
         </button>
     );

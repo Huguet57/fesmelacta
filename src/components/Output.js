@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 
-function Output({ processor, isModelLoaded, isAudioLoaded }) {
+function Output({ state, setState, processor, isModelLoaded, isAudioLoaded }) {
     const [lines, setLines] = useState([]);
     const [audioParts, setAudioParts] = useState([]);
     const [fullAudio, setFullAudio] = useState(null);
-    const [state, setState] = useState(0);
 
     const addNewLine = (line) => {
         setLines(prev => [...prev, line]);

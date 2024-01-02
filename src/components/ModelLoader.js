@@ -18,7 +18,7 @@ const ModelLoaded = ({ loaded, modelName }) => {
   );
 }
 
-const ModelLoader = ({ processor, success, error }) => {
+const ModelLoader = ({ processor, success, error, state }) => {
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [model, setModel] = useState(null);
@@ -61,12 +61,14 @@ const ModelLoader = ({ processor, success, error }) => {
     return <div>Loading...</div>;
   }
 
+  const isDisabled = 3 < state && state < 7;
+
   return (
     <div>
       <ModelLoaded loaded={loaded} modelName={model} />
-      <button onClick={() => loadModel('small')}>Transcripció ràpida</button>
-      <button onClick={() => loadModel('medium')}>Transcripció de qualitat</button>
-      <LanguageSelector processor={processor} />
+      <button disabled={isDisabled} onClick={() => loadModel('small')}>Transcripció ràpida</button>
+      <button disabled={isDisabled} onClick={() => loadModel('medium')}>Transcripció de qualitat</button>
+      <LanguageSelector disabled={isDisabled}  processor={processor} />
     </div>
   );
 }

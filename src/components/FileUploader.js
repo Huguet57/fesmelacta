@@ -1,23 +1,10 @@
 import React, { useState } from 'react';
 import { saveFileToIndexedDB } from '../utils/indexedDB';
 
-const FileUploader = ({ processor, success, error }) => {
+const FileUploader = ({ processor, success, error, state }) => {
     const saveFileToDB = async (file) => {
         saveFileToIndexedDB(file);
         success();
-
-        // const reader = new FileReader();
-        // reader.onload = async (event) => {
-        //     saveFileToIndexedDB(reader.result);
-        //     success();
-        // };
-
-        // reader.onerror = (event) => {
-        //     console.error('Error reading file', event);
-        //     error();
-        // };
-
-        // reader.readAsArrayBuffer(file);
     }
 
     const handleFileChange = (event) => {
@@ -25,8 +12,10 @@ const FileUploader = ({ processor, success, error }) => {
         saveFileToDB(file);
     }
 
+    const isDisabled = 3 < state && state < 7;
+
     return (
-        <input type="file" onChange={handleFileChange} accept="audio/wav,audio/mpeg" />
+        <input disabled={isDisabled} type="file" onChange={handleFileChange} accept="audio/wav,audio/mpeg" />
     );
 }
 

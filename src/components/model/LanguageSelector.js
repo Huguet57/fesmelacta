@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const LanguageSelector = ({ processor }) => {
+const LanguageSelector = ({ processor, isDisabled }) => {
   const [language, setLanguage] = useState('ca');
 
   const handleLanguageChange = (event) => {
@@ -12,7 +12,13 @@ const LanguageSelector = ({ processor }) => {
   }, [language]);
 
   return (
-      <select id="language" name="language" value={language} onChange={handleLanguageChange}>
+      <select
+        id="language"
+        name="language"
+        value={language}
+        onChange={handleLanguageChange}
+        disabled={isDisabled}
+      >
         <option value="ca">Català</option>
         <option value="es">Castellà</option>
         <option value="en">Anglès</option>
