@@ -18,7 +18,10 @@ function Output({ state, setState, processor, isModelLoaded, isAudioLoaded }) {
     }
 
     const changeState = (newState) => {
-        setState(prev => Math.max(prev, newState));
+        setState(prev => {
+            if (prev < 7) return Math.max(prev, newState);
+            return newState;
+        });
     }
 
     useEffect(() => {
