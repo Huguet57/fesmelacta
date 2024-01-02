@@ -4,6 +4,7 @@ import FileUploader from './components/FileUploader';
 import ModelLoader from './components/ModelLoader';
 import Processor from './components/Processor';
 import Output from './components/Output';
+import Header from './components/extra/Header';
 
 const AudioProcessor = () => {
     const [isModelLoaded, setIsModelLoaded] = useState(false);
@@ -17,6 +18,7 @@ const AudioProcessor = () => {
 
     return (
         <div>
+            <Header />
             <ModelLoader state={state} processor={processor} success={() => setIsModelLoaded(true)} error={(err) => console.error(err)} />
             <FileUploader state={state} processor={processor} success={() => setIsAudioLoaded(true)} error={(err) => console.error(err)} />
             <Processor state={state} processor={processor} />
