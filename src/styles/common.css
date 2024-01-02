@@ -36,6 +36,16 @@ button.selected {
     background-color: #29732c;
 }
 
+button.selected:hover {
+    background-color: #276427;
+}
+
+button:disabled {
+    background-color: #ddd;
+    color: #666;
+    cursor: not-allowed;
+}
+
 label {
     font-weight: bold;
 }
