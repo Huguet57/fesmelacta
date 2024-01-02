@@ -1,18 +1,10 @@
 import { useState } from "react";
 
-function TranscripcioOutput({ initialLines }) {
-    const [lines, setLines] = useState(initialLines.filter(l => l));
-
-    const handleTextChange = (event) => {
-        // Update the lines state by splitting the new value by new lines
-        setLines(event.target.value.split('\n'));
-    };
-
+function TranscripcioOutput({ lines }) {
     return (
         <textarea
             placeholder="Aquí apareixerà la transcripció del text."
-            value={lines.join('\n')}
-            onChange={handleTextChange}
+            value={lines.filter(l => l !== '').join('\n')}
         />
     );
 }
