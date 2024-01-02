@@ -68,7 +68,6 @@ const ModelLoader = ({ processor, success, error, state }) => {
       <ModelLoaded loaded={loaded} modelName={model} />
       <button disabled={isDisabled} onClick={() => loadModel('small')}>Transcripció ràpida</button>
       <button disabled={isDisabled} onClick={() => loadModel('medium')}>Transcripció de qualitat</button>
-      <LanguageSelector disabled={isDisabled}  processor={processor} />
     </div>
   );
 }

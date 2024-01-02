@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-const LanguageSelector = ({ processor, isDisabled }) => {
+const LanguageSelector = ({ processor, state }) => {
   const [language, setLanguage] = useState('ca');
+  const isDisabled = 3 < state && state < 7;
 
   const handleLanguageChange = (event) => {
     setLanguage(event.target.value);

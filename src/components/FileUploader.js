@@ -15,7 +15,10 @@ const FileUploader = ({ processor, success, error, state }) => {
     const isDisabled = 3 < state && state < 7;
 
     return (
-        <input disabled={isDisabled} type="file" onChange={handleFileChange} accept="audio/wav,audio/mpeg" />
+        <div>
+            <label for="file">Fitxer d'àudio:</label>
+            <input disabled={isDisabled} type="file" onChange={handleFileChange} accept="audio/wav,audio/mpeg" />
+        </div>
     );
 }
 
