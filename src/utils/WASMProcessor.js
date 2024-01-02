@@ -98,11 +98,10 @@ export class WASMProcessor {
         const reader = new FileReader();
         reader.onload = async (event) => {
             el.src = reader.result;
+            document.body.appendChild(el);
         };
 
         reader.readAsDataURL(this.audio);
-
-        document.body.appendChild(el);
     }
 
     async processNextAudio() {
