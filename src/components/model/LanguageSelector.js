@@ -13,6 +13,9 @@ const LanguageSelector = ({ processor, state }) => {
   }, [language]);
 
   return (
+    <div>
+      <label htmlFor="language">Idioma:</label>
+
       <select
         id="language"
         name="language"
@@ -82,6 +85,7 @@ const LanguageSelector = ({ processor, state }) => {
         <option value="vi">Vietnamita</option>
         <option value="zh">Xinès</option>
       </select>
+    </div>
   );
 };
 
