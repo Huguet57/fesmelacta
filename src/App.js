@@ -7,8 +7,11 @@ import Processor from './components/Processor';
 const AudioProcessor = () => {
     const [isModelLoaded, setIsModelLoaded] = useState(false);
     const [isAudioLoaded, setIsAudioLoaded] = useState(false);
+    const [processor, setProcessor] = useState(null);
 
-    const processor = new WASMProcessor();
+    useEffect(() => {
+        setProcessor(new WASMProcessor());
+    }, []);
 
     return (
         <div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { loadModelFromIndexedDB, saveModelToIndexedDB } from '../utils/indexedDB';
 import { fetchModel } from '../utils/models';
+import LanguageSelector from './model/LanguageSelector';
 
 const ModelLoader = ({ processor, success, error }) => {
   const [loading, setLoading] = useState(false);
@@ -12,7 +13,7 @@ const ModelLoader = ({ processor, success, error }) => {
       const model = await loadModelFromIndexedDB();
 
       if (model) {
-            processor.setModel(model);
+            processor?.setModel(model);
             saveModelToIndexedDB(model);
 
           setLoading(false);
@@ -22,7 +23,7 @@ const ModelLoader = ({ processor, success, error }) => {
       } else {
           fetchModel(modelName)
               .then(model => {
-                    processor.setModel(model);
+                    processor?.setModel(model);
                     saveModelToIndexedDB(model);
 
                     setLoading(false);
@@ -45,18 +46,11 @@ const ModelLoader = ({ processor, success, error }) => {
     return <div>Loading...</div>;
   }
 
-  if (!loaded) {
-    return (
-        <div>
-            <button onClick={() => loadModel('tiny')}>Load Tiny Model</button>
-        </div>
-    );
-  }
-
   return (
     <div>
-      <div>Model: {model}</div>
+      { loaded && <div>Model: {model}</div> }
       <button onClick={() => loadModel('tiny')}>Load Tiny Model</button>
+      <LanguageSelector processor={processor} />
     </div>
   );
 }
