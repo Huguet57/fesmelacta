@@ -180,7 +180,7 @@ export class WASMProcessor {
 
         // this.showAudioPart();
 
-        setTimeout(() => this.changeState(5), 2000); // Àudio processat. Comença la transcripció...
+        setTimeout(() => this.changeState(5), 1000); // Àudio processat. Comença la transcripció...
 
         const result = window.Module.full_default(
             this.instance, 
@@ -190,7 +190,7 @@ export class WASMProcessor {
             this.translate,
         )
 
-        setTimeout(() => this.changeState(6), 10000); // Transcripció en curs...
+        setTimeout(() => this.changeState(6), 12000); // Transcripció en curs...
     }
 
     async process() {
