@@ -24,6 +24,10 @@ export class WASMProcessor {
 
         // Miscelaneous
         this.timeoutId = null;
+
+        // Printing
+        this.linesCallback = null;
+        this.audioPartsCallback = null;
     }
 
     async printAndCheck(str) {
@@ -54,7 +58,8 @@ export class WASMProcessor {
             return;
         }
 
-        document.body.innerHTML += str + '<br>';
+        // document.body.innerHTML += str + '<br>';
+        this.linesCallback(str);
     }
 
     async loadAudioChunk() {
@@ -92,13 +97,9 @@ export class WASMProcessor {
     }
 
     async showAudio() {
-        const el = document.createElement('audio');
-        el.controls = true;
-
         const reader = new FileReader();
         reader.onload = async (event) => {
-            el.src = reader.result;
-            document.body.appendChild(el);
+            this.audioPartsCallback(reader.result);
         };
 
         reader.readAsDataURL(this.audio);
@@ -132,4 +133,10 @@ export class WASMProcessor {
     setLanguage(language) {
         this.language = language;
     }
+
+    setOutput({ lines, audioParts }) {
+        this.linesCallback = lines;
+        this.audioPartsCallback = audioParts;
+    }
+
 }
