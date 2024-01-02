@@ -3,6 +3,21 @@ import { loadModelFromIndexedDB, saveModelToIndexedDB } from '../utils/indexedDB
 import { fetchModel } from '../utils/models';
 import LanguageSelector from './model/LanguageSelector';
 
+const ModelLoaded = ({ loaded, modelName }) => {
+  const nameMap = {
+    small: 'ràpida',
+    medium: 'de qualitat',
+  };
+
+  if (!loaded) {
+    return null;
+  }
+
+  return (
+    <div>Utilitzant model de transcripció {nameMap[modelName]}.</div>
+  );
+}
+
 const ModelLoader = ({ processor, success, error }) => {
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -48,7 +63,7 @@ const ModelLoader = ({ processor, success, error }) => {
 
   return (
     <div>
-      { loaded && <div>Model: {model}</div> }
+      <ModelLoaded loaded={loaded} modelName={model} />
       <button onClick={() => loadModel('small')}>Transcripció ràpida</button>
       <button onClick={() => loadModel('medium')}>Transcripció de qualitat</button>
       <LanguageSelector processor={processor} />
