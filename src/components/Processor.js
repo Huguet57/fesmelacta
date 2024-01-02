@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const Processor = ({ processor, state }) => {
-    const isReady = state === 3 || state === 7;
+    const isReady = state === 3;
 
     const handleClick = () => {
         if (isReady) {
