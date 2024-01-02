@@ -1,4 +1,8 @@
 import { useEffect, useState } from "react";
+import StateOutput from "./output/StateOutput";
+import '../styles/output.css'
+import FullAudio from "./output/FullAudio";
+import TranscripcioOutput from "./output/TranscripcioOutput";
 
 function Output({ state, setState, processor, isModelLoaded, isAudioLoaded }) {
     const [lines, setLines] = useState([]);
@@ -51,50 +55,12 @@ function Output({ state, setState, processor, isModelLoaded, isAudioLoaded }) {
         isAudioLoaded,
     ]);
 
-    const printState = (state) => {
-        switch (state) {
-            case 0:
-                return 'Falta triar quin tipus de transcripció vols fer i carregar un àudio';
-            case 1:
-                return 'Falta carregar un àudio';
-            case 2:
-                return 'Falta triar quin tipus de transcripció vols fer';
-            case 3:
-                return 'Preparat.';
-            case 4:
-                return 'Processant àudio...';
-            case 5:
-                return 'Àudio processat. Comença la transcripció...';
-            case 6:
-                return 'Transcripció en curs...';
-            case 7:
-                return 'Transcripció finalitzada';
-            default:
-                return 'Desconegut';
-        }
-    }
-
     return (
         <div>
-            <h2>Estat</h2>
-            <div>
-                {printState(state)}
-            </div>
+            <StateOutput state={state} />
+            <FullAudio fullAudio={fullAudio} />
 
-            <h2>Àudio complet</h2>
-            <div>
-                {fullAudio && <audio controls src={fullAudio}></audio>}
-            </div>
-
-            {/* <h2>Parts de l'àudio</h2>
-            <div>
-                {audioParts.map((audioPart, index) => <audio key={index} controls src={audioPart}></audio>)}
-            </div> */}
-
-            <h2>Transcripció</h2>
-            <div>
-                {lines.map((line, index) => <div key={index}>{line}</div>)}
-            </div>
+            { state > 3 && <TranscripcioOutput lines={lines} /> }
         </div>
     );
 }
