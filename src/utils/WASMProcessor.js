@@ -3,7 +3,7 @@ import { readNextChunkFromIndexedDB } from "./indexedDB";
 
 export class WASMProcessor {
     constructor() {
-        this.currentChunk = 0;
+        this.audioOffset = 0;
         this.instance = null;
         this.chunkData = null;
         this.audio = null;
@@ -53,6 +53,7 @@ export class WASMProcessor {
 
             this.timeoutId = setTimeout(() => {
                 this.processNextAudio();
+                this.addOffset();
             }, 1000);
 
             return;
@@ -102,6 +103,24 @@ export class WASMProcessor {
             this.audioPartsCallback(reader.result);
         };
 
+        reader.readAsDataURL(this.audio);
+    }
+
+    async addOffset() {
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            const audioDataUrl = reader.result;
+    
+            // Create a new Audio object
+            const audio = new Audio(audioDataUrl);
+    
+            // Once the audio is loaded, get its duration
+            audio.onloadedmetadata = () => {
+                const audioLengthInSeconds = audio.duration;
+                this.audioOffset += audioLengthInSeconds;
+            };
+        };
+    
         reader.readAsDataURL(this.audio);
     }
 
