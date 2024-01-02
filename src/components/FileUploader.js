@@ -15,17 +15,32 @@ const FileUploader = ({ processor, success, error, state }) => {
     const isDisabled = 3 < state && state < 7;
 
     return (
-        <div>
-            <label for="file">Fitxer d'àudio:</label>
+        <div
+            style={{
+                marginTop: '20px',
+                marginBottom: '20px',
+            }}
+        >
+            <label for="file">Fitxer d'àudio: </label>
             <input disabled={isDisabled} type="file" onChange={handleFileChange} accept="audio/wav,audio/mpeg" />
 
             <div
                 style={{
                     fontSize: '12px',
                     color: '#666',
-                    marginBottom: '10px',
+                    marginTop: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
                 }}
             >
+                <img
+                    src={"https://cdn-icons-png.flaticon.com/256/3634/3634451.png"}
+                    style={{
+                        width: '20px',
+                        height: '20px',
+                        marginRight: '5px',
+                    }}
+                />
                 <em>Ja es poden penjar àudios d'hores de llargada! Però han de ser .mp3 o .wav, si us plau converteix-los abans.</em>
             </div>
         </div>
