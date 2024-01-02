@@ -1,6 +1,10 @@
 function FullAudio({ fullAudio }) {
     return (
-        <div>
+        <div
+            style={{
+                marginTop: '20px',
+            }}
+        >
             {fullAudio && <audio controls src={fullAudio}></audio>}
         </div>
     )

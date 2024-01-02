@@ -2,11 +2,8 @@ function TranscripcioOutput({ lines }) {
     return (
         <textarea
             placeholder="Aquí apareixerà la transcripció del text."
-        >
-            {
-                lines.join('\n')
-            }
-        </textarea>
+            value={lines.join('\n')}
+        />
     );
 }
 
