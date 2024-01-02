@@ -33,14 +33,6 @@ const FileUploader = ({ processor, success, error, state }) => {
                     alignItems: 'center',
                 }}
             >
-                <img
-                    src={"https://cdn-icons-png.flaticon.com/256/3634/3634451.png"}
-                    style={{
-                        width: '20px',
-                        height: '20px',
-                        marginRight: '5px',
-                    }}
-                />
                 <em>Ja es poden penjar àudios d'hores de llargada! Però han de ser .mp3 o .wav, si us plau converteix-los abans.</em>
             </div>
         </div>
