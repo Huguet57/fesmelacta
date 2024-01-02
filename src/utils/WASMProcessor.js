@@ -7,6 +7,7 @@ export class WASMProcessor {
         this.instance = null;
         this.chunkData = null;
         this.audio = null;
+        this.fullAudio = null;
         this.language = 'ca';
         this.nthreads = navigator.hardwareConcurrency ?
             Math.max(1, Math.floor(navigator.hardwareConcurrency * 0.8)) :
@@ -28,6 +29,7 @@ export class WASMProcessor {
         // Printing
         this.linesCallback = null;
         this.audioPartsCallback = null;
+        this.fullAudioCallback = null;
     }
 
     async printAndCheck(str) {
@@ -124,7 +126,19 @@ export class WASMProcessor {
         this.instance = window.Module.init('whisper.bin');
     }
 
-    async showAudio() {
+    async showFullAudio() {
+        localforage.getItem('file')
+            .then(file => {
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    this.fullAudioCallback(reader.result);
+                };
+            
+                reader.readAsDataURL(file);
+            })
+    }
+
+    async showAudioPart() {
         const reader = new FileReader();
         reader.onload = async (event) => {
             this.audioPartsCallback(reader.result);
@@ -157,7 +171,8 @@ export class WASMProcessor {
         const audioFound = await this.loadAudioChunk()
         if (!audioFound) return;
 
-        this.showAudio();
+        // this.showAudioPart();
+        this.showFullAudio();
 
         const result = window.Module.full_default(
             this.instance, 
@@ -180,9 +195,10 @@ export class WASMProcessor {
         this.language = language;
     }
 
-    setOutput({ lines, audioParts }) {
+    setOutput({ lines, audioParts, fullAudio }) {
         this.linesCallback = lines;
         this.audioPartsCallback = audioParts;
+        this.fullAudioCallback = fullAudio;
     }
 
 }

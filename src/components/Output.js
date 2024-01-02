@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 function Output({ processor }) {
     const [lines, setLines] = useState([]);
     const [audioParts, setAudioParts] = useState([]);
+    const [fullAudio, setFullAudio] = useState(null);
 
     const addNewLine = (line) => {
         setLines(prev => [...prev, line]);
@@ -12,19 +13,29 @@ function Output({ processor }) {
         setAudioParts(prev => [...prev, audioPart]);
     }
 
+    const addFullAudio = (audio) => {
+        setFullAudio(audio);
+    }
+
     useEffect(() => {
         processor?.setOutput({
             lines: addNewLine,
             audioParts: addNewAudioPart,
+            fullAudio: addFullAudio,
         });
     }, [processor]);
 
     return (
         <div>
-            <h2>Parts de l'àudio</h2>
+            <h2>Àudio complet</h2>
+            <div>
+                {fullAudio && <audio controls src={fullAudio}></audio>}
+            </div>
+
+            {/* <h2>Parts de l'àudio</h2>
             <div>
                 {audioParts.map((audioPart, index) => <audio key={index} controls src={audioPart}></audio>)}
-            </div>
+            </div> */}
 
             <h2>Transcripció</h2>
             <div>
