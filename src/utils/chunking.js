@@ -2,12 +2,12 @@ import localforage from "localforage";
 
 const getIthChunk = async (i) => {
     return new Promise((resolve, reject) => {
-        const chunkSize = 0.25 * 1024 * 1024;
         localforage.getItem('file').then(file => {
             const reader = new FileReader();
 
             reader.onload = async (event) => {
                 const audioData = reader.result;
+                const chunkSize = (file.type === 'audio/mpeg' ? 1 : 2) * (10 * 60 * 16000 + 44); // 10 minutes of audio
 
                 if (i * chunkSize >= audioData.byteLength) {
                     resolve(null);
