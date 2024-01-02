@@ -8,6 +8,7 @@ import Header from './components/extra/Header';
 import LanguageSelector from './components/model/LanguageSelector';
 import './styles/common.css';
 import SideBySide from './components/extra/SideBySide';
+import Credits from './components/extra/Credits';
 
 const AudioProcessor = () => {
     const [isModelLoaded, setIsModelLoaded] = useState(false);
@@ -31,6 +32,7 @@ const AudioProcessor = () => {
             </SideBySide>
 
             <Output state={state} setState={setState} processor={processor} isModelLoaded={isModelLoaded} isAudioLoaded={isAudioLoaded} />
+            <Credits />
         </div>
     );
 }

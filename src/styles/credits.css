@@ -1,0 +1,13 @@
+.credits {
+    margin-top: 30px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.credits a {
+    color: #0275d8;
+}
+
+.credits span {
+    display: block;
+}
