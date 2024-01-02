@@ -15,12 +15,15 @@ export class WASMProcessor {
 
         // Module initialization
         window.Module.print = this.printAndCheck.bind(this);
-        window.Module.printErr = console.error;
+        window.Module.printErr = this.printAndCheck.bind(this);
         window.Module.setStatus = function(text) {
             console.log('js:', text);
         }
         window.Module.monitorRunDependencies = function(left) {
         }
+
+        // Miscelaneous
+        this.timeoutId = null;
     }
 
     async printAndCheck(str) {
@@ -42,7 +45,12 @@ export class WASMProcessor {
         }
 
         if (finish_commands.some(cmd => str.includes(cmd))) {
-            this.processNextAudio();
+            if (this.timeoutId) clearTimeout(this.timeoutId);
+
+            this.timeoutId = setTimeout(() => {
+                this.processNextAudio();
+            }, 1000);
+
             return;
         }
 
