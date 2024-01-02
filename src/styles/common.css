@@ -32,6 +32,10 @@ button:hover {
     background-color: #45a049;
 }
 
+button.selected {
+    background-color: #29732c;
+}
+
 label {
     font-weight: bold;
 }

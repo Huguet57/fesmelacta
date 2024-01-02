@@ -14,7 +14,14 @@ const ModelLoaded = ({ loaded, modelName }) => {
   }
 
   return (
-    <div>Utilitzant model de transcripció {nameMap[modelName]}.</div>
+    <div
+      style={{
+        fontSize: '12px',
+        marginBottom: '10px',
+      }}
+    >
+      Utilitzant model de transcripció {nameMap[modelName]}.
+    </div>
   );
 }
 
@@ -65,9 +72,9 @@ const ModelLoader = ({ processor, success, error, state }) => {
 
   return (
     <div>
-      <ModelLoaded loaded={loaded} modelName={model} />
-      <button disabled={isDisabled} onClick={() => loadModel('small')}>Transcripció ràpida (190 MB)</button>
-      <button disabled={isDisabled} onClick={() => loadModel('medium')}>Transcripció de qualitat (514 MB)</button>
+      {/* <ModelLoaded loaded={loaded} modelName={model} /> */}
+      <button className={model === 'small' ? 'selected' : ''} disabled={isDisabled} onClick={() => loadModel('small')}>Transcripció ràpida (190 MB)</button>
+      <button className={model === 'small' ? 'medium' : ''} disabled={isDisabled} onClick={() => loadModel('medium')}>Transcripció de qualitat (514 MB)</button>
     </div>
   );
 }
