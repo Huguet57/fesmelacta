@@ -26,7 +26,7 @@ const FileUploader = ({ processor, success, error }) => {
     }
 
     return (
-        <input type="file" onChange={handleFileChange} />
+        <input type="file" onChange={handleFileChange} accept="audio/wav,audio/mpeg" />
     );
 }
 
