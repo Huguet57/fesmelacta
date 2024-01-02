@@ -127,15 +127,21 @@ export class WASMProcessor {
     }
 
     async showFullAudio() {
-        localforage.getItem('file')
-            .then(file => {
-                const reader = new FileReader();
-                reader.onload = async (event) => {
-                    this.fullAudioCallback(reader.result);
-                };
-            
-                reader.readAsDataURL(file);
-            })
+        return new Promise((resolve, reject) => {
+            localforage.getItem('file')
+                .then(file => {
+                    const reader = new FileReader();
+                    reader.onload = async (event) => {
+                        this.fullAudioCallback(reader.result);
+                        resolve();
+                    };
+                
+                    reader.readAsDataURL(file);
+                })
+                .catch(err => {
+                    reject(err);
+                });
+        });
     }
 
     async showAudioPart() {
@@ -172,7 +178,6 @@ export class WASMProcessor {
         if (!audioFound) return;
 
         // this.showAudioPart();
-        this.showFullAudio();
 
         const result = window.Module.full_default(
             this.instance, 
@@ -184,7 +189,13 @@ export class WASMProcessor {
     }
 
     async process() {
-        this.processNextAudio();
+        this.showFullAudio()
+            .then(() => {
+                this.processNextAudio();
+            })
+            .catch(err => {
+                this.processNextAudio();
+            });
     }
 
     async setModel(model) {
