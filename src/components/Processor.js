@@ -9,7 +9,7 @@ const Processor = ({ processor, isAudioLoaded, isModelLoaded }) => {
 
     return (
         <button onClick={handleClick} disabled={!isAudioLoaded || !isModelLoaded}>
-            Process
+            Transcriu
         </button>
     );
 };
