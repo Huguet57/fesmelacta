@@ -49,7 +49,8 @@ const ModelLoader = ({ processor, success, error }) => {
   return (
     <div>
       { loaded && <div>Model: {model}</div> }
-      <button onClick={() => loadModel('tiny')}>Load Tiny Model</button>
+      <button onClick={() => loadModel('small')}>Transcripció ràpida</button>
+      <button onClick={() => loadModel('medium')}>Transcripció de qualitat</button>
       <LanguageSelector processor={processor} />
     </div>
   );
