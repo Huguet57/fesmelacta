@@ -9,7 +9,7 @@ export const modelSizes = {
 };
 
 
-export const fetchModel = (modelName) => {
+export const fetchModel = (modelName, onProgress) => {
     return new Promise(async (resolve, reject) => {
         const modelUrl = modelUrls[modelName];
 
@@ -24,11 +24,12 @@ export const fetchModel = (modelName) => {
         );
 
         if (!response.ok) {
-            // console.error('fetchModel: failed to fetch ' + modelUrl);
-            reject(null);
+            reject(new Error('Failed to fetch model from ' + modelUrl));
             return;
         }
 
+        const contentLength = response.headers.get('content-length');
+        let receivedLength = 0;
         const chunks = [];
         const reader = response.body.getReader();
 
@@ -40,11 +41,16 @@ export const fetchModel = (modelName) => {
             }
 
             chunks.push(value);
+            receivedLength += value.length;
+
+            if (contentLength && onProgress) {
+                const progress = receivedLength / contentLength * 100;
+                onProgress(progress);
+            }
         }
 
-        let position = 0;
-        const receivedLength = chunks.reduce((total, arr) => total + arr.length, 0);
         const chunksAll = new Uint8Array(receivedLength);
+        let position = 0;
 
         chunks.forEach(chunk => {
             chunksAll.set(chunk, position);
