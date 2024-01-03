@@ -178,7 +178,7 @@ export class WASMProcessor {
         const audioFound = await this.loadAudioChunk()
         if (!audioFound) return;
 
-        // this.showAudioPart();
+        this.showAudioPart();
 
         setTimeout(() => this.changeState(5), 1000); // Àudio processat. Comença la transcripció...
 

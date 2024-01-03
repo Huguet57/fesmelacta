@@ -3,6 +3,7 @@ import StateOutput from "./output/StateOutput";
 import '../styles/output.css'
 import FullAudio from "./output/FullAudio";
 import TranscripcioOutput from "./output/TranscripcioOutput";
+import AudioParts from "./output/AudioParts";
 
 function Output({ state, setState, processor, isModelLoaded, isAudioLoaded }) {
     const [lines, setLines] = useState([]);
@@ -59,6 +60,7 @@ function Output({ state, setState, processor, isModelLoaded, isAudioLoaded }) {
         <div>
             <StateOutput state={state} />
             <FullAudio fullAudio={fullAudio} />
+            {/* <AudioParts audioParts={audioParts} /> */}
 
             <TranscripcioOutput lines={lines} state={state} />
         </div>
