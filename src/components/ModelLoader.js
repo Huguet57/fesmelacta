@@ -8,6 +8,7 @@ const ModelLoader = ({ processor, success, error, state }) => {
   const [loaded, setLoaded] = useState(false);
   const [model, setModel] = useState(null);
   const [progress, setProgress] = useState(null);
+  const [downloading, setDownloading] = useState(null);
 
   const loadModel = async (modelName) => {
     try {
@@ -30,17 +31,21 @@ const ModelLoader = ({ processor, success, error, state }) => {
 
           if (!confirmed) return;
 
+          setDownloading(modelName);
+
           fetchModel(modelName, setProgress)
               .then(model => {
                     processor?.setModel(model);
                     saveModelToIndexedDB(modelName, model);
-
+                    
+                    setDownloading(null);
                     setLoading(false);
                     setLoaded(true);
                     setModel(modelName);
                     success();
               })
               .catch(err => {
+                    setDownloading(null);
                     setLoading(false);
                     error(err);
                 });
@@ -60,8 +65,8 @@ const ModelLoader = ({ processor, success, error, state }) => {
   return (
     <div>
       {/* <ModelLoaded loaded={loaded} modelName={model} /> */}
-      <button className={model === 'small' ? 'selected' : ''} disabled={isDisabled} onClick={() => loadModel('small')}>Transcripció ràpida (190 MB)</button>
-      <button className={model === 'medium' ? 'selected' : ''} disabled={isDisabled} onClick={() => loadModel('medium')}>Transcripció de qualitat (514 MB)</button>
+      <button className={(model === 'small' ? 'selected' : '') + (downloading === 'small' ? 'downloading' : '')} disabled={isDisabled} onClick={() => loadModel('small')}>Transcripció ràpida (190 MB)</button>
+      <button className={(model === 'medium' ? 'selected' : '') + (downloading === 'medium' ? 'downloading' : '')} disabled={isDisabled} onClick={() => loadModel('medium')}>Transcripció de qualitat (514 MB)</button>
 
       { (0 < progress && progress < 100) && <ProgressBar progress={progress} /> }
     </div>

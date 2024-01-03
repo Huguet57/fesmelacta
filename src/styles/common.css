@@ -46,6 +46,34 @@ button:disabled {
     cursor: not-allowed;
 }
 
+button.downloading {
+    animation: color-change 4s infinite;
+}
+
+@keyframes color-change {
+    0% { background-color: rgb(76, 175, 80); }
+    5% { background-color: rgb(73, 170, 77); }
+    10% { background-color: rgb(70, 165, 74); }
+    15% { background-color: rgb(67, 160, 71); }
+    20% { background-color: rgb(64, 155, 68); }
+    25% { background-color: rgb(61, 150, 65); }
+    30% { background-color: rgb(58, 145, 62); }
+    35% { background-color: rgb(55, 140, 59); }
+    40% { background-color: rgb(52, 135, 56); }
+    45% { background-color: rgb(49, 130, 53); }
+    50% { background-color: rgb(46, 125, 50); }
+    55% { background-color: rgb(49, 130, 53); }
+    60% { background-color: rgb(52, 135, 56); }
+    65% { background-color: rgb(55, 140, 59); }
+    70% { background-color: rgb(58, 145, 62); }
+    75% { background-color: rgb(61, 150, 65); }
+    80% { background-color: rgb(64, 155, 68); }
+    85% { background-color: rgb(67, 160, 71); }
+    90% { background-color: rgb(70, 165, 74); }
+    95% { background-color: rgb(73, 170, 77); }
+    100% { background-color: rgb(76, 175, 80); }
+}
+
 label {
     font-weight: bold;
 }
