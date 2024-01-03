@@ -35,7 +35,7 @@ const getIthChunk = async (i) => {
                 const audioData = reader.result;
                 const chunkSize = 
                     file.type === 'audio/mpeg' ? 1 * 10 * 60 * 16000 : // 10 minutes of audio
-                    file.type === 'audio/ogg' ? 1000000 : // 10 minutes of audio
+                    file.type === 'audio/ogg' ? 500000 : // ? minutes of audio
                     file.type === 'audio/wav' ? 2 * 10 * 60 * 16000 : // 10 minutes of audio
                     10 * 60 * 16000; // 10 minutes of audio
 
