@@ -74,7 +74,7 @@ const ModelLoader = ({ processor, success, error, state }) => {
     <div>
       {/* <ModelLoaded loaded={loaded} modelName={model} /> */}
       <button className={model === 'small' ? 'selected' : ''} disabled={isDisabled} onClick={() => loadModel('small')}>Transcripció ràpida (190 MB)</button>
-      <button className={model === 'small' ? 'medium' : ''} disabled={isDisabled} onClick={() => loadModel('medium')}>Transcripció de qualitat (514 MB)</button>
+      <button className={model === 'medium' ? 'selected' : ''} disabled={isDisabled} onClick={() => loadModel('medium')}>Transcripció de qualitat (514 MB)</button>
     </div>
   );
 }

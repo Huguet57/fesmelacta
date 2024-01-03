@@ -23,13 +23,18 @@ const AudioProcessor = () => {
     return (
         <div>
             <Header />
-            <ModelLoader state={state} processor={processor} success={() => setIsModelLoaded(true)} error={(err) => console.error(err)} />
-            <FileUploader state={state} processor={processor} success={() => setIsAudioLoaded(true)} error={(err) => console.error(err)} />
-            
-            <SideBySide>
-                <LanguageSelector state={state}  processor={processor} />
-                <Processor state={state} processor={processor} />
-            </SideBySide>
+
+            {
+                state <= 3 && <>
+                    <ModelLoader state={state} processor={processor} success={() => setIsModelLoaded(true)} error={(err) => console.error(err)} />
+                    <FileUploader state={state} processor={processor} success={() => setIsAudioLoaded(true)} error={(err) => console.error(err)} />
+                    
+                    <SideBySide>
+                        <LanguageSelector state={state}  processor={processor} />
+                        <Processor state={state} processor={processor} />
+                    </SideBySide>
+                </>
+            }
 
             <Output state={state} setState={setState} processor={processor} isModelLoaded={isModelLoaded} isAudioLoaded={isAudioLoaded} />
             <Credits />
