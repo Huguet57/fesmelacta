@@ -4,9 +4,9 @@ import localforage from "localforage";
 
 let currentChunkIndex = 0;
 
-const saveModelToIndexedDB = async (model) => {
+const saveModelToIndexedDB = async (modelName, data) => {
     try {
-        await localForage.setItem('model', model);
+        await localForage.setItem(modelName, data);
         return true;
     } catch (err) {
         // console.error('Error saving model to IndexedDB', err);
@@ -14,9 +14,9 @@ const saveModelToIndexedDB = async (model) => {
     }
 };
 
-const loadModelFromIndexedDB = async () => {
+const loadModelFromIndexedDB = async (modelName) => {
     try {
-        const model = await localForage.getItem('model');
+        const model = await localForage.getItem(modelName);
         return model;
     } catch (err) {
         // console.error('Error loading model from IndexedDB', err);

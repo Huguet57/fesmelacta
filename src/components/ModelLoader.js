@@ -32,11 +32,11 @@ const ModelLoader = ({ processor, success, error, state }) => {
 
   const loadModel = async (modelName) => {
     try {
-      const model = await loadModelFromIndexedDB();
+      const model = await loadModelFromIndexedDB(modelName);
 
       if (model) {
             processor?.setModel(model);
-            saveModelToIndexedDB(model);
+            saveModelToIndexedDB(modelName, model);
 
           setLoading(false);
           setLoaded(true);
@@ -46,7 +46,7 @@ const ModelLoader = ({ processor, success, error, state }) => {
           fetchModel(modelName)
               .then(model => {
                     processor?.setModel(model);
-                    saveModelToIndexedDB(model);
+                    saveModelToIndexedDB(modelName, model);
 
                     setLoading(false);
                     setLoaded(true);
