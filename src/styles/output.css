@@ -1,9 +1,10 @@
 textarea {
-    width: 97%;
     height: 150px;
     margin-top: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
     padding: 10px;
     font-size: 12px;
     line-height: 1.5;
