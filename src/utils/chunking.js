@@ -1,6 +1,9 @@
 import localforage from "localforage";
 
 function lengthOggHeader(audioData) {
+    // TODO: Canviar, però lo altre no va
+    return 100;
+
     // Create a DataView for easier access to the binary data
     const dataView = new DataView(audioData);
 
@@ -30,7 +33,11 @@ const getIthChunk = async (i) => {
 
             reader.onload = async (event) => {
                 const audioData = reader.result;
-                const chunkSize = (file.type === 'audio/mpeg' ? 1 : 2) * (10 * 60 * 16000 + 44); // 10 minutes of audio
+                const chunkSize = 
+                    file.type === 'audio/mpeg' ? 1 * 10 * 60 * 16000 : // 10 minutes of audio
+                    file.type === 'audio/ogg' ? 1000000 : // 10 minutes of audio
+                    file.type === 'audio/wav' ? 2 * 10 * 60 * 16000 : // 10 minutes of audio
+                    10 * 60 * 16000; // 10 minutes of audio
 
                 if (i * chunkSize >= audioData.byteLength) {
                     resolve(null);
