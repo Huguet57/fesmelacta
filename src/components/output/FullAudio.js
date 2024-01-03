@@ -2,7 +2,8 @@ function FullAudio({ fullAudio }) {
     return (
         <div
             style={{
-                marginTop: '20px',
+                marginTop: '10px',
+                marginBottom: '10px',
                 width: '100%',
             }}
         >
