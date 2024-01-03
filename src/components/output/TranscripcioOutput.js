@@ -49,6 +49,10 @@ function TranscripcioOutput({ lines }) {
         });
     }, []);
 
+    useEffect(() => {
+        textAreaRef.current.scrollTop = textAreaRef.current.scrollHeight;
+    }, [lines]);
+
     const filteredLines = lines
         .filter(line => line !== '')
         .map(line => (filterBrackets ? filterOutBrackets(line) : line))
