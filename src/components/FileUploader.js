@@ -33,7 +33,7 @@ const FileUploader = ({ processor, success, error, state }) => {
                     alignItems: 'center',
                 }}
             >
-                <em>Ja es poden penjar àudios d'hores de llargada! Però han de ser .mp3 o .wav, si us plau converteix-los abans.</em>
+                <em>Ja es poden penjar àudios d'hores de llargada! Però han de ser .mp3, .ogg o .wav, si us plau converteix-los abans.</em>
             </div>
         </div>
     );
