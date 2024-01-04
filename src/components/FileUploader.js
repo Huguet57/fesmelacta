@@ -26,7 +26,7 @@ const FileUploader = ({ processor, success, error, state }) => {
                 disabled={isDisabled}
                 type="file"
                 onChange={handleFileChange}
-                // accept="audio/wav,audio/mpeg,audio/ogg"
+                accept="audio/*"
             />
 
             <div
