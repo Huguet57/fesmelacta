@@ -44,7 +44,7 @@ function TranscripcioOutput({ lines, state }) {
 
     useEffect(() => {
         localforage.getItem('filterBrackets').then((value) => {
-            setFilterBrackets(value);
+            setFilterBrackets(value ? true : false);
         }).catch((err) => {
             setFilterBrackets(false);
         });
