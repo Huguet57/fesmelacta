@@ -22,7 +22,12 @@ const FileUploader = ({ processor, success, error, state }) => {
             }}
         >
             <label htmlFor="file">Fitxer d'àudio: </label>
-            <input disabled={isDisabled} type="file" onChange={handleFileChange} accept="audio/wav,audio/mpeg,audio/ogg" />
+            <input
+                disabled={isDisabled}
+                type="file"
+                onChange={handleFileChange}
+                // accept="audio/wav,audio/mpeg,audio/ogg"
+            />
 
             <div
                 style={{

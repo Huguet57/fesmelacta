@@ -1,29 +1,44 @@
 import localforage from "localforage";
+import { useRef, useState } from 'react';
+import { FFmpeg } from '@ffmpeg/ffmpeg';
+import { fetchFile, toBlobURL } from '@ffmpeg/util';
 
-function lengthOggHeader(audioData) {
-    // TODO: Canviar, però lo altre no va
-    return 100;
+function convertToWav(audioData, type) {
+    const ffmpeg = new FFmpeg({ log: true });
 
-    // Create a DataView for easier access to the binary data
-    const dataView = new DataView(audioData);
+    const loadFFmpeg = async () => {
+        if (!ffmpeg.loaded) {
+            try {
+                const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+                await ffmpeg.load({
+                    coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+                    wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+                });
+            } catch (error) {
+                console.error('Failed to load FFmpeg:', error);
+                throw error;
+            }
+        }
+    };
 
-    // The capture pattern ("OggS") is 4 bytes
-    const capturePattern = String.fromCharCode(dataView.getUint8(0), dataView.getUint8(1), dataView.getUint8(2), dataView.getUint8(3));
-    if (capturePattern !== 'OggS') {
-        console.error('Not a valid OGG file');
-        return;
-    }
+    return new Promise(async (resolve, reject) => {
+        try {
+            await loadFFmpeg();
 
-    // Skip 22 bytes (version, header type, granule position, bitstream serial number, page sequence number, checksum)
-    const headerFixedPartLength = 26;
+            const uint8Array = new Uint8Array(audioData);
 
-    // Get the number of page segments from the 27th byte
-    const pageSegments = dataView.getUint8(26);
+            await ffmpeg.writeFile(`audio.${type}`, uint8Array);
 
-    // Calculate total header length
-    const totalHeaderLength = headerFixedPartLength + pageSegments;
+            await ffmpeg.exec(['-i', `audio.${type}`, '-ac', '1', '-ar', '16000', '-f', 'wav', '-map_metadata', '-1', 'audio.wav']);
 
-    return totalHeaderLength;
+            const converted_uint8Array = await ffmpeg.readFile('audio.wav');
+            const data = converted_uint8Array.buffer;
+
+            resolve(data);
+        } catch (err) {
+            reject(err);
+        }
+    });
 }
 
 const getIthChunk = async (i) => {
@@ -32,31 +47,41 @@ const getIthChunk = async (i) => {
             const reader = new FileReader();
 
             reader.onload = async (event) => {
-                const audioData = reader.result;
+                const preAudioData = reader.result;
+
+                const audioData = 
+                    file.type === 'audio/mpeg' ? preAudioData :     // Already covered
+                    file.type === 'audio/wav' ? preAudioData :      // Already covered
+                    file.type === 'audio/ogg' ? await convertToWav(preAudioData, 'ogg') :
+                    file.type === 'audio/flac' ? await convertToWav(preAudioData, 'flac') :
+                    file.type === 'audio/aac' ? await convertToWav(preAudioData, 'aac') :
+                    file.type === 'audio/x-m4a' ? await convertToWav(preAudioData, 'm4a') :
+                    preAudioData;
+
                 const chunkSize = 
                     file.type === 'audio/mpeg' ? 1 * 10 * 60 * 16000 : // 10 minutes of audio
-                    file.type === 'audio/ogg' ? 500000 : // ? minutes of audio
                     file.type === 'audio/wav' ? 2 * 10 * 60 * 16000 : // 10 minutes of audio
-                    10 * 60 * 16000; // 10 minutes of audio
+                    // file.type === 'audio/ogg' ? 500000 : // ? minutes of audio
+                    2 * 10 * 60 * 16000; // 10 minutes of audio
 
                 if (i * chunkSize >= audioData.byteLength) {
                     resolve(null);
                     return;
                 }
 
-                const headerLength = file.type === 'audio/ogg' ? lengthOggHeader(audioData) : 44;
+                const headerLength = 100;
                 const header = audioData.slice(0, headerLength); // Get the header of the file
 
                 const chunkStart = Math.max(i * chunkSize, headerLength);
                 const chunkEnd = Math.min((i + 1) * chunkSize, audioData.byteLength);
                 let chunk = audioData.slice(chunkStart, chunkEnd);
 
-                console.log('headerLength', headerLength, 'chunkStart', chunkStart, 'chunkEnd', chunkEnd, 'chunkSize', chunkSize, 'audioData.byteLength', audioData.byteLength);
-                
+                console.log('chunkStart', chunkStart, 'chunkEnd', chunkEnd, 'chunkSize', chunkSize, 'audioData.byteLength', audioData.byteLength);
+
                 // Hack per que no passi lo que el primer chunk posa que dura tot el fitxer
                 if (file.type === 'audio/mpeg') chunk = audioData.slice(chunkStart + 1, chunkEnd);
                 
-                resolve(new Blob([header, chunk], {type: file.type}));
+                resolve(new Blob([header, chunk], {type: 'audio/wav'}));
             }
 
             reader.readAsArrayBuffer(file);
