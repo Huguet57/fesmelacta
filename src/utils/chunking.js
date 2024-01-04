@@ -10,24 +10,9 @@ function convertToWav(audioData, type) {
         if (!ffmpeg.loaded) {
             try {
                 const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
-
-                // Load ffmpeg-core.js into IndexedDB
-                let coreURL = await localforage.getItem('ffmpeg-core.js');
-                if (!coreURL) {
-                    coreURL = await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript');
-                    await localforage.setItem('ffmpeg-core.js', coreURL);
-                }
-
-                // Load ffmpeg-core.wasm into IndexedDB
-                let wasmURL = await localforage.getItem('ffmpeg-core.wasm');
-                if (!wasmURL) {
-                    wasmURL = await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm');
-                    await localforage.setItem('ffmpeg-core.wasm', wasmURL);
-                }
-
                 await ffmpeg.load({
-                    coreURL,
-                    wasmURL,
+                    coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+                    wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
                 });
             } catch (error) {
                 console.error('Failed to load FFmpeg:', error);
@@ -91,7 +76,7 @@ const getIthChunk = async (i) => {
                 const chunkEnd = Math.min((i + 1) * chunkSize, audioData.byteLength);
                 let chunk = audioData.slice(chunkStart, chunkEnd);
 
-                // console.log('chunkStart', chunkStart, 'chunkEnd', chunkEnd, 'chunkSize', chunkSize, 'audioData.byteLength', audioData.byteLength);
+                console.log('chunkStart', chunkStart, 'chunkEnd', chunkEnd, 'chunkSize', chunkSize, 'audioData.byteLength', audioData.byteLength);
 
                 // Hack per que no passi lo que el primer chunk posa que dura tot el fitxer
                 if (file.type === 'audio/mpeg') chunk = audioData.slice(chunkStart + 1, chunkEnd);
