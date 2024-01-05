@@ -34,6 +34,8 @@ export class WASMProcessor {
     }
 
     async printAndCheck(str) {
+        if (str === '') return;
+
         const finish_commands = [
             'whisper_print_timings:',
         ]
