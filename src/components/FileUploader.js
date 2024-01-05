@@ -125,6 +125,7 @@ const FileUploader = ({ isAudioLoaded, processor, success, error, state }) => {
                                 <input
                                     disabled={isDisabled}
                                     defaultValue={start.h}
+                                    max={end.h}
                                     onChange={(event) => {
                                         setStart(prev => ({
                                             ...prev,
@@ -150,7 +151,7 @@ const FileUploader = ({ isAudioLoaded, processor, success, error, state }) => {
                                     }}
                                     type="number"
                                     min="0"
-                                    max="59"
+                                    max={end.h === 0 ? end.m : 59}
                                     step="1"
                                     style={{
                                         width: '30px',
@@ -169,7 +170,7 @@ const FileUploader = ({ isAudioLoaded, processor, success, error, state }) => {
                                     }}
                                     type="number"
                                     min="0"
-                                    max="59"
+                                    max={end.h === 0 && end.m === 0 ? end.s : 59}
                                     step="1"
                                     style={{
                                         width: '30px',
@@ -208,7 +209,7 @@ const FileUploader = ({ isAudioLoaded, processor, success, error, state }) => {
                                     }}
                                     type="number"
                                     min="0"
-                                    max="59"
+                                    max={end.h === 0 ? end.m : 59}
                                     step="1"
                                     style={{
                                         width: '30px',
@@ -227,7 +228,7 @@ const FileUploader = ({ isAudioLoaded, processor, success, error, state }) => {
                                     disabled={isDisabled}
                                     type="number"
                                     min="0"
-                                    max="59"
+                                    max={end.h === 0 && end.m === 0 ? end.s : 59}
                                     step="1"
                                     style={{
                                         width: '30px',
