@@ -29,7 +29,7 @@ function StateOutput({ state }) {
     React.useEffect(() => {
         const intervalId = setInterval(() => {
             setLoadingStep(step => (step%3) + 1); // Cycle through 1 to 3
-        }, 400); // Update every 400 milliseconds
+        }, 500); // Update every 500 milliseconds
 
         return () => {
             clearInterval(intervalId);

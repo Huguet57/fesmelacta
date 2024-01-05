@@ -60,7 +60,7 @@ function Output({ state, setState, processor, isModelLoaded, isAudioLoaded }) {
         <div>
             <StateOutput state={state} />
             <FullAudio fullAudio={fullAudio} />
-            <AudioParts audioParts={audioParts} />
+            {/* <AudioParts audioParts={audioParts} /> */}
 
             <TranscripcioOutput lines={lines} state={state} />
         </div>
