@@ -74,6 +74,10 @@ const ModelLoader = ({ processor, success, error, state }) => {
           // Check if 'medium' model is already in localforage
           } else if (key.includes('medium')) {
             setSavedModels(prev => ({ ...prev, medium: true }));
+
+          // Check if 'base' model is already in localforage
+          } else if (key.includes('base')) {
+            setSavedModels(prev => ({ ...prev, base: true }));
           }
         })
       })
@@ -88,7 +92,8 @@ const ModelLoader = ({ processor, success, error, state }) => {
   return (
     <div>
       {/* <ModelLoaded loaded={loaded} modelName={model} /> */}
-      <button className={(model === 'small' ? 'selected' : '') + (downloading === 'small' ? 'downloading' : '')} onClick={() => loadModel('small')}>Transcripció ràpida{ !savedModels['small'] && <> (190 MB)</> }</button>
+      <button className={(model === 'base' ? 'selected' : '') + (downloading === 'base' ? 'downloading' : '')} onClick={() => loadModel('base')}>Transcripció ràpida{ !savedModels['base'] && <> (57 MB)</> }</button>
+      {/* <button className={(model === 'small' ? 'selected' : '') + (downloading === 'small' ? 'downloading' : '')} onClick={() => loadModel('small')}>Transcripció ràpida{ !savedModels['small'] && <> (190 MB)</> }</button> */}
       <button className={(model === 'medium' ? 'selected' : '') + (downloading === 'medium' ? 'downloading' : '')} onClick={() => loadModel('medium')}>Transcripció de qualitat{ !savedModels['medium'] && <> (514 MB)</> }</button>
 
       { (0 < progress && progress < 100) && <ProgressBar progress={progress} /> }
