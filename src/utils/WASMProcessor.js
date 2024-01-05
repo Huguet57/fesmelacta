@@ -52,6 +52,8 @@ export class WASMProcessor {
         }
 
         if (finish_commands.some(cmd => str.includes(cmd))) {
+            console.log(str);
+
             if (this.timeoutId) clearTimeout(this.timeoutId);
 
             this.timeoutId = setTimeout(() => {
