@@ -1,3 +1,5 @@
+import React from 'react';
+
 export const printState = (state, verbose=false) => {
     switch (state) {
         case 0:
@@ -21,13 +23,29 @@ export const printState = (state, verbose=false) => {
     }
 }
 
-function StateOutput({ state}) {
+function StateOutput({ state }) {
+    const [loadingStep, setLoadingStep] = React.useState(0);
+
+    React.useEffect(() => {
+        const intervalId = setInterval(() => {
+            setLoadingStep(step => (step%3) + 1); // Cycle through 1 to 3
+        }, 400); // Update every 400 milliseconds
+
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [state]);
+
+    const getDisplayText = () => {
+        let text = printState(state);
+        let dots = '.'.repeat(loadingStep);
+        return text.replace('...', dots); // Replace the three dots with the animated version
+    }
+
     return (
         <div>
-            <div
-                className={'output'}
-            >
-                SISTEMA: {printState(state)}
+            <div className={'output'}>
+                SISTEMA: {getDisplayText()}
             </div>
         </div>
     );
