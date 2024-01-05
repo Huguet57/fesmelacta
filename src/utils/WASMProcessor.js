@@ -14,6 +14,10 @@ export class WASMProcessor {
             4;
         this.translate = false;
 
+        // Start and end
+        this.start = null;
+        this.end = null;
+
         // Module initialization
         window.Module.print = this.printAndCheck.bind(this);
         window.Module.printErr = this.printAndCheck.bind(this);
@@ -107,12 +111,12 @@ export class WASMProcessor {
                     const preAudioData = reader.result;
 
                     const audioData = 
-                        file.type === 'audio/wav' ? preAudioData :      // Already covered
-                        file.type === 'audio/mpeg' ? await convertToWav(preAudioData, 'mp3') :
-                        file.type === 'audio/ogg' ? await convertToWav(preAudioData, 'ogg') :
-                        file.type === 'audio/flac' ? await convertToWav(preAudioData, 'flac') :
-                        file.type === 'audio/aac' ? await convertToWav(preAudioData, 'aac') :
-                        file.type === 'audio/x-m4a' ? await convertToWav(preAudioData, 'm4a') :
+                        file.type === 'audio/wav' ? await convertToWav(preAudioData, 'wav', this.start, this.end) :
+                        file.type === 'audio/mpeg' ? await convertToWav(preAudioData, 'mp3', this.start, this.end) :
+                        file.type === 'audio/ogg' ? await convertToWav(preAudioData, 'ogg', this.start, this.end) :
+                        file.type === 'audio/flac' ? await convertToWav(preAudioData, 'flac', this.start, this.end) :
+                        file.type === 'audio/aac' ? await convertToWav(preAudioData, 'aac', this.start, this.end) :
+                        file.type === 'audio/x-m4a' ? await convertToWav(preAudioData, 'm4a', this.start, this.end) :
                         await convertToWav(preAudioData, 'unknown');
 
                     await saveAudioToIndexedDB(audioData);
@@ -242,4 +246,11 @@ export class WASMProcessor {
         this.changeState = changeState;
     }
 
+    setStart(start) {
+        this.start = start;
+    }
+
+    setEnd(end) {
+        this.end = end;
+    }
 }

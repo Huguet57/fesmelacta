@@ -16,7 +16,19 @@ export const dataURLfromArrayBuffer = (buffer) => {
     return 'data:audio/wav;base64,' + window.btoa(base64);
 };
 
-export function convertToWav(audioData, type) {
+export const secondsToHHMMSS = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds - (hours * 3600)) / 60);
+    const remainingSeconds = seconds - (hours * 3600) - (minutes * 60);
+
+    const paddedHours = hours.toString().padStart(2, '0');
+    const paddedMinutes = minutes.toString().padStart(2, '0');
+    const paddedSeconds = remainingSeconds.toString().padStart(2, '0');
+
+    return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
+};
+
+export function convertToWav(audioData, type, start=null, end=null) {
     const ffmpeg = new FFmpeg({ log: true });
 
     const loadFFmpeg = async () => {
@@ -42,7 +54,11 @@ export function convertToWav(audioData, type) {
 
             await ffmpeg.writeFile(`audio.${type}`, uint8Array);
 
-            await ffmpeg.exec(['-i', `audio.${type}`, '-ac', '1', '-ar', '16000', '-f', 'wav', '-map_metadata', '-1', 'audio.wav']);
+            if (end) {
+                await ffmpeg.exec(['-i', `audio.${type}`, '-ss', secondsToHHMMSS(start || 0), '-to', secondsToHHMMSS(end), '-ac', '1', '-ar', '16000', '-f', 'wav', '-map_metadata', '-1', 'audio.wav']);
+            } else {
+                await ffmpeg.exec(['-i', `audio.${type}`, '-ss', secondsToHHMMSS(start || 0), '-ac', '1', '-ar', '16000', '-f', 'wav', '-map_metadata', '-1', 'audio.wav']);
+            }
 
             const converted_uint8Array = await ffmpeg.readFile('audio.wav');
             const data = converted_uint8Array.buffer;
