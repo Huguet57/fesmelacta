@@ -11,9 +11,9 @@ export const printState = (state, verbose=false) => {
         case 4:
             return 'Processant àudio...';
         case 5:
-            return 'Àudio processat. Comença la transcripció...';
+            return 'Àudio processat. Comença la transcripció...' + (verbose ? ' (aquesta operació pot començar en 5 o 10 minuts en ordinadors de més de 5 anys)' : '');
         case 6:
-            return 'Transcripció en curs...' + verbose ? ' (aquesta operació pot començar en 5 o 10 minuts en ordinadors de més de 5 anys)' : '';
+            return 'Transcripció en curs...';
         case 7:
             return 'Transcripció finalitzada';
         default:

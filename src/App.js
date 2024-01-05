@@ -24,9 +24,10 @@ const AudioProcessor = () => {
         <div>
             <Header />
 
+            <ModelLoader state={state} processor={processor} success={() => setIsModelLoaded(true)} error={(err) => console.error(err)} />
+
             {
                 state <= 3 && <>
-                    <ModelLoader state={state} processor={processor} success={() => setIsModelLoaded(true)} error={(err) => console.error(err)} />
                     <FileUploader state={state} processor={processor} success={() => setIsAudioLoaded(true)} error={(err) => console.error(err)} />
                     
                     <SideBySide>
