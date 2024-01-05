@@ -1,6 +1,7 @@
 import React from 'react';
 import doneSound from '../../sounds/bell.wav';
 import SideBySide from '../extra/SideBySide';
+import localforage from 'localforage';
 
 export const printState = (state, verbose=false) => {
     switch (state) {
@@ -11,7 +12,7 @@ export const printState = (state, verbose=false) => {
         case 2:
             return 'Et falta triar quin tipus de transcripció vols fer.';
         case 3:
-            return 'Preparat.';
+            return 'Preparat. Pica "Transcriu" per començar.';
         case 4:
             return 'Processant àudio...';
         case 5:
@@ -26,6 +27,10 @@ export const printState = (state, verbose=false) => {
 }
 
 const AudioButton = ({ activateFinishAudio, setActivateFinishAudio }) => {
+    const handleChange = (event) => {
+        setActivateFinishAudio(event.target.checked);
+    }
+
     return (
         <div
             style={{
@@ -47,14 +52,15 @@ const AudioButton = ({ activateFinishAudio, setActivateFinishAudio }) => {
                 <input
                     id="audio"
                     type="checkbox"
-                    checked={activateFinishAudio}
-                    onChange={() => setActivateFinishAudio(prev => !prev)}
+                    disabled={activateFinishAudio === null}
+                    checked={activateFinishAudio || false}
+                    onChange={handleChange}
                     style={{
                         width: 10,
                         marginRight: 5,
                     }}
                 />
-                Reproduir so al finalitzar
+                So al finalitzar
             </label>
         </div>
     )
@@ -62,7 +68,7 @@ const AudioButton = ({ activateFinishAudio, setActivateFinishAudio }) => {
 
 function StateOutput({ state }) {
     const [loadingStep, setLoadingStep] = React.useState(0);
-    const [activateFinishAudio, setActivateFinishAudio] = React.useState(false);
+    const [activateFinishAudio, setActivateFinishAudio] = React.useState(null);
 
     React.useEffect(() => {
         const intervalId = setInterval(() => {
@@ -81,6 +87,22 @@ function StateOutput({ state }) {
         }
     }, [
         state,
+    ]);
+
+    React.useEffect(() => {
+        if (activateFinishAudio === null) {
+            localforage.getItem('activateFinishAudio').then(value => {
+                if (value !== null) {
+                    setActivateFinishAudio(value);
+                } else {
+                    setActivateFinishAudio(false);
+                }
+            });
+        } else {
+            localforage.setItem('activateFinishAudio', activateFinishAudio);
+        }
+    }, [
+        activateFinishAudio,
     ]);
 
     const getDisplayText = () => {
