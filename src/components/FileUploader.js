@@ -1,16 +1,57 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { saveFileToIndexedDB } from '../utils/indexedDB';
+import SideBySide from './extra/SideBySide';
+import { getAudioLength } from '../utils/chunking';
 
-const FileUploader = ({ processor, success, error, state }) => {
+export const secondsToHMS = (seconds) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds - (h * 3600)) / 60);
+    const s = seconds - (h * 3600) - (m * 60);
+
+    return {
+        h,
+        m,
+        s,
+    };
+};
+
+const FileUploader = ({ isAudioLoaded, processor, success, error, state }) => {
+    const [start, setStart] = useState({
+        h: 0,
+        m: 0,
+        s: 0,
+    });
+
+    const [end, setEnd] = useState({
+        h: null,
+        m: null,
+        s: null,
+    });
+
+    const [lengthLoaded, setLengthLoaded] = useState(false);
+
     const saveFileToDB = async (file) => {
         saveFileToIndexedDB(file);
         success();
     }
 
-    const handleFileChange = (event) => {
+    const handleFileChange = async (event) => {
         const file = event.target.files[0];
         saveFileToDB(file);
+        setEnd(secondsToHMS(await getAudioLength(file)));
     }
+
+    useEffect(() => {
+        if (
+            end.h !== null &&
+            end.m !== null &&
+            end.s !== null
+        ) {
+            setLengthLoaded(true);
+        }
+    }, [
+        end
+    ]);
 
     const isDisabled = 3 < state && state < 7;
 
@@ -21,25 +62,126 @@ const FileUploader = ({ processor, success, error, state }) => {
                 marginBottom: '20px',
             }}
         >
-            <label className='title' htmlFor="file">Fitxer d'àudio: </label>
-            <input
-                disabled={isDisabled}
-                type="file"
-                onChange={handleFileChange}
-                accept="audio/*"
-            />
-
-            <div
-                style={{
-                    fontSize: '12px',
-                    color: '#666',
-                    marginTop: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                }}
+            <SideBySide
+                justifyContent='space-between'
             >
-                <em>Ja es poden penjar àudios d'hores de llargada!</em>
-            </div>
+                <div>
+                    <label className='title' htmlFor="file">Fitxer d'àudio: </label>
+                    <input
+                        disabled={isDisabled}
+                        type="file"
+                        onChange={handleFileChange}
+                        accept="audio/*"
+                    />
+
+                    <div
+                        style={{
+                            fontSize: '12px',
+                            color: '#666',
+                            marginTop: '10px',
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <em>Ja es poden penjar àudios d'hores de llargada!</em>
+                    </div>
+                </div>
+
+                {
+                    lengthLoaded && (
+                        <div
+                            style={{
+                                display: isAudioLoaded ? 'flex' : 'none',
+                                alignItems: 'flex-end',
+                                flexDirection: 'column',
+                                gap: 5,
+                                fontSize: '12px',
+                            }}
+                        >
+                            <div>
+                                <label className="title" htmlFor="start">Inici: </label>
+                                <input
+                                    disabled={isDisabled}
+                                    defaultValue={start.h}
+                                    type="number"
+                                    min="0"
+                                    step="1"
+                                    style={{
+                                        width: '30px',
+                                    }}
+                                />
+                                <span style={{ margin: '0 5px' }}>h</span>
+                                <input
+                                    disabled={isDisabled}
+                                    defaultValue={start.m}
+                                    type="number"
+                                    min="0"
+                                    max="59"
+                                    step="1"
+                                    style={{
+                                        width: '30px',
+                                    }}
+                                />
+                                <span style={{ margin: '0 5px' }}>m</span>
+                                <input
+                                    id="start"
+                                    disabled={isDisabled}
+                                    defaultValue={start.s}
+                                    type="number"
+                                    min="0"
+                                    max="59"
+                                    step="1"
+                                    style={{
+                                        width: '30px',
+                                    }}
+                                />
+                                <span style={{ margin: '0 5px' }}>s</span>
+                            </div>
+                            <div>
+                                <label className="title" htmlFor="end">Fi: </label>
+                                <input
+                                    disabled={isDisabled}
+                                    defaultValue={end.h}
+                                    type="number"
+                                    min="0"
+                                    step="1"
+                                    max={end.h}
+                                    style={{
+                                        width: '30px',
+                                    }}
+                                />
+                                <span style={{ margin: '0 5px' }}>h</span>
+                                <input
+                                    disabled={isDisabled}
+                                    defaultValue={end.m}
+                                    type="number"
+                                    min="0"
+                                    max="59"
+                                    step="1"
+                                    style={{
+                                        width: '30px',
+                                    }}
+                                />
+                                <span style={{ margin: '0 5px' }}>m</span>
+                                <input
+                                    id="end"
+                                    defaultValue={end.s}
+                                    disabled={isDisabled}
+                                    type="number"
+                                    min="0"
+                                    max="59"
+                                    step="1"
+                                    style={{
+                                        width: '30px',
+                                    }}
+                                />
+                                <span style={{ margin: '0 5px' }}>s</span>
+                            </div>
+                        
+                        </div>
+                    )
+                }
+            </SideBySide>
         </div>
     );
 }

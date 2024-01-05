@@ -28,7 +28,7 @@ const AudioProcessor = () => {
 
             {
                 state <= 3 && <>
-                    <FileUploader state={state} processor={processor} success={() => setIsAudioLoaded(true)} error={(err) => console.error(err)} />
+                    <FileUploader isAudioLoaded={isAudioLoaded} state={state} processor={processor} success={() => setIsAudioLoaded(true)} error={(err) => console.error(err)} />
                     
                     <SideBySide>
                         <LanguageSelector state={state}  processor={processor} />

@@ -16,6 +16,19 @@ export const dataURLfromArrayBuffer = (buffer) => {
     return 'data:audio/wav;base64,' + window.btoa(base64);
 };
 
+export const getAudioLength = async (file) => {
+    return new Promise((resolve, reject) => {
+        const audio = new Audio(URL.createObjectURL(file));
+        audio.onloadedmetadata = function() {
+            const duration = audio.duration;
+            resolve(duration);
+        };
+        audio.onerror = function() {
+            reject();
+        }
+    });
+}
+
 export const secondsToHHMMSS = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds - (hours * 3600)) / 60);
