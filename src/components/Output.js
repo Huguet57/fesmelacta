@@ -5,6 +5,8 @@ import FullAudio from "./output/FullAudio";
 import TranscripcioOutput from "./output/TranscripcioOutput";
 import AudioParts from "./output/AudioParts";
 
+import doneSound from '../sounds/bell.wav';
+
 function Output({ state, setState, processor, isModelLoaded, isAudioLoaded }) {
     const [lines, setLines] = useState([]);
     const [audioParts, setAudioParts] = useState([]);
@@ -54,6 +56,15 @@ function Output({ state, setState, processor, isModelLoaded, isAudioLoaded }) {
     }, [
         isModelLoaded,
         isAudioLoaded,
+    ]);
+
+    useEffect(() => {
+        if (state === 7) {
+            const audio = new Audio(doneSound);
+            audio.play();
+        }
+    }, [
+        state,
     ]);
 
     return (
