@@ -117,7 +117,7 @@ function TranscripcioOutput({ lines, state }) {
             <textarea
                 ref={textAreaRef}
                 placeholder={
-                    state > 3 ? printState(state) :
+                    state > 3 ? printState(state, true) :
                     "Aquí apareixerà la transcripció del text."
                 }
                 value={filteredLines}
