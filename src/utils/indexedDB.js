@@ -4,6 +4,16 @@ import localforage from "localforage";
 
 let currentChunkIndex = 0;
 
+export const saveAudioToIndexedDB = async (audio) => {
+    try {
+        await localforage.setItem('audio', audio);
+        return true;
+    } catch (err) {
+        // console.error('Error saving audio to IndexedDB', err);
+        return false;
+    }
+};
+
 const saveModelToIndexedDB = async (modelName, data) => {
     try {
         await localForage.setItem(modelName, data);

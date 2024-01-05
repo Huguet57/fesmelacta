@@ -1,5 +1,6 @@
 import localforage from "localforage";
-import { readNextChunkFromIndexedDB } from "./indexedDB";
+import { readNextChunkFromIndexedDB, saveAudioToIndexedDB } from "./indexedDB";
+import { convertToWav, dataURLfromArrayBuffer } from "./chunking";
 
 export class WASMProcessor {
     constructor() {
@@ -7,7 +8,6 @@ export class WASMProcessor {
         this.instance = null;
         this.chunkData = null;
         this.audio = null;
-        this.fullAudio = null;
         this.language = 'ca';
         this.nthreads = navigator.hardwareConcurrency ?
             Math.max(1, Math.floor(navigator.hardwareConcurrency * 0.8)) :
@@ -99,6 +99,37 @@ export class WASMProcessor {
         });
     }
 
+    async loadAudio() {
+        return new Promise(async (resolve, reject) => {
+            localforage.getItem('file').then(file => {
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    const preAudioData = reader.result;
+
+                    const audioData = 
+                        file.type === 'audio/mpeg' ? preAudioData :     // Already covered
+                        file.type === 'audio/wav' ? preAudioData :      // Already covered
+                        file.type === 'audio/ogg' ? await convertToWav(preAudioData, 'ogg') :
+                        file.type === 'audio/flac' ? await convertToWav(preAudioData, 'flac') :
+                        file.type === 'audio/aac' ? await convertToWav(preAudioData, 'aac') :
+                        file.type === 'audio/x-m4a' ? await convertToWav(preAudioData, 'm4a') :
+                        await convertToWav(preAudioData, 'unknown');
+
+                    const asDataURL = dataURLfromArrayBuffer(audioData);
+                    await saveAudioToIndexedDB(asDataURL);
+                    this.showFullAudio(asDataURL);
+
+                    resolve(true);            
+                };
+            
+                reader.readAsArrayBuffer(file);
+            }).catch(err => {
+                // console.error('Error loading audio from IndexedDB', err);
+                reject(err);
+            });
+        });
+    }
+
     async loadAudioChunk() {
         return new Promise((resolve, reject) => {
             readNextChunkFromIndexedDB()
@@ -133,22 +164,8 @@ export class WASMProcessor {
         this.instance = window.Module.init('whisper.bin');
     }
 
-    async showFullAudio() {
-        return new Promise((resolve, reject) => {
-            localforage.getItem('file')
-                .then(file => {
-                    const reader = new FileReader();
-                    reader.onload = async (event) => {
-                        this.fullAudioCallback(reader.result);
-                        resolve();
-                    };
-                
-                    reader.readAsDataURL(file);
-                })
-                .catch(err => {
-                    reject(err);
-                });
-        });
+    async showFullAudio(dataURL) {
+        this.fullAudioCallback(dataURL);
     }
 
     async showAudioPart() {
@@ -200,7 +217,7 @@ export class WASMProcessor {
     async process() {
         this.changeState(4); // Processant àudio...
 
-        this.showFullAudio()
+        this.loadAudio()
             .then(() => {
                 this.processNextAudio();
             })

@@ -3,7 +3,20 @@ import { useRef, useState } from 'react';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { fetchFile, toBlobURL } from '@ffmpeg/util';
 
-function convertToWav(audioData, type) {
+export const dataURLfromArrayBuffer = (buffer) => {
+    const CHUNK_SIZE = 0x8000; // Arbitrary size
+    const array = new Uint8Array(buffer);
+    let base64 = '';
+
+    for (let i = 0; i < array.length; i += CHUNK_SIZE) {
+        const chunk = array.subarray(i, i + CHUNK_SIZE);
+        base64 += String.fromCharCode.apply(null, chunk);
+    }
+
+    return 'data:audio/wav;base64,' + window.btoa(base64);
+};
+
+export function convertToWav(audioData, type) {
     const ffmpeg = new FFmpeg({ log: true });
 
     const loadFFmpeg = async () => {
