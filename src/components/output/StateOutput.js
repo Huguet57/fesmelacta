@@ -1,4 +1,4 @@
-export const printState = (state) => {
+export const printState = (state, verbose=false) => {
     switch (state) {
         case 0:
             return 'Falta triar quin tipus de transcripció vols fer i carregar un àudio';
@@ -13,7 +13,7 @@ export const printState = (state) => {
         case 5:
             return 'Àudio processat. Comença la transcripció...';
         case 6:
-            return 'Transcripció en curs...';
+            return 'Transcripció en curs...' + verbose ? ' (aquesta operació pot començar en 5 o 10 minuts en ordinadors de més de 5 anys)' : '';
         case 7:
             return 'Transcripció finalitzada';
         default:
