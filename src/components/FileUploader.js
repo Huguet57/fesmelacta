@@ -53,6 +53,28 @@ const FileUploader = ({ isAudioLoaded, processor, success, error, state }) => {
         end
     ]);
 
+    useEffect(() => {
+        if (
+            processor &&
+            start.h !== null &&
+            start.m !== null &&
+            start.s !== null &&
+            end.h !== null &&
+            end.m !== null &&
+            end.s !== null
+        ) {
+            const startSeconds = start.h * 3600 + start.m * 60 + start.s;
+            const endSeconds = end.h * 3600 + end.m * 60 + end.s;
+
+            processor.setStart(startSeconds);
+            processor.setEnd(endSeconds);
+        }
+    }, [
+        processor,
+        start,
+        end,
+    ]);
+
     const isDisabled = 3 < state && state < 7;
 
     return (
@@ -103,6 +125,12 @@ const FileUploader = ({ isAudioLoaded, processor, success, error, state }) => {
                                 <input
                                     disabled={isDisabled}
                                     defaultValue={start.h}
+                                    onChange={(event) => {
+                                        setStart(prev => ({
+                                            ...prev,
+                                            h: parseInt(event.target.value),
+                                        }))
+                                    }}
                                     type="number"
                                     min="0"
                                     step="1"
@@ -114,6 +142,12 @@ const FileUploader = ({ isAudioLoaded, processor, success, error, state }) => {
                                 <input
                                     disabled={isDisabled}
                                     defaultValue={start.m}
+                                    onChange={(event) => {
+                                        setStart(prev => ({
+                                            ...prev,
+                                            m: parseInt(event.target.value),
+                                        }))
+                                    }}
                                     type="number"
                                     min="0"
                                     max="59"
@@ -127,6 +161,12 @@ const FileUploader = ({ isAudioLoaded, processor, success, error, state }) => {
                                     id="start"
                                     disabled={isDisabled}
                                     defaultValue={start.s}
+                                    onChange={(event) => {
+                                        setStart(prev => ({
+                                            ...prev,
+                                            s: parseInt(event.target.value),
+                                        }))
+                                    }}
                                     type="number"
                                     min="0"
                                     max="59"
@@ -142,6 +182,12 @@ const FileUploader = ({ isAudioLoaded, processor, success, error, state }) => {
                                 <input
                                     disabled={isDisabled}
                                     defaultValue={end.h}
+                                    onChange={(event) => {
+                                        setEnd(prev => ({
+                                            ...prev,
+                                            h: parseInt(event.target.value),
+                                        }))
+                                    }}
                                     type="number"
                                     min="0"
                                     step="1"
@@ -154,6 +200,12 @@ const FileUploader = ({ isAudioLoaded, processor, success, error, state }) => {
                                 <input
                                     disabled={isDisabled}
                                     defaultValue={end.m}
+                                    onChange={(event) => {
+                                        setEnd(prev => ({
+                                            ...prev,
+                                            m: parseInt(event.target.value),
+                                        }))
+                                    }}
                                     type="number"
                                     min="0"
                                     max="59"
@@ -166,6 +218,12 @@ const FileUploader = ({ isAudioLoaded, processor, success, error, state }) => {
                                 <input
                                     id="end"
                                     defaultValue={end.s}
+                                    onChange={(event) => {
+                                        setEnd(prev => ({
+                                            ...prev,
+                                            s: parseInt(event.target.value),
+                                        }))
+                                    }}
                                     disabled={isDisabled}
                                     type="number"
                                     min="0"
