@@ -9,7 +9,7 @@ function convertToWav(audioData, type) {
     const loadFFmpeg = async () => {
         if (!ffmpeg.loaded) {
             try {
-                const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+                const baseURL = 'https://whisper-cpp-models.s3.eu-west-3.amazonaws.com';
                 await ffmpeg.load({
                     coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
                     wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
