@@ -56,48 +56,24 @@ export function convertToWav(audioData, type) {
 
 const getIthChunk = async (i) => {
     return new Promise((resolve, reject) => {
-        localforage.getItem('file').then(file => {
-            const reader = new FileReader();
+        localforage.getItem('audio').then(async audioData => {
+            const chunkSize = 2 * 10 * 60 * 16000; // 10 minutes of audio at 16kHz
 
-            reader.onload = async (event) => {
-                const preAudioData = reader.result;
-
-                const audioData = 
-                    file.type === 'audio/mpeg' ? preAudioData :     // Already covered
-                    file.type === 'audio/wav' ? preAudioData :      // Already covered
-                    file.type === 'audio/ogg' ? await convertToWav(preAudioData, 'ogg') :
-                    file.type === 'audio/flac' ? await convertToWav(preAudioData, 'flac') :
-                    file.type === 'audio/aac' ? await convertToWav(preAudioData, 'aac') :
-                    file.type === 'audio/x-m4a' ? await convertToWav(preAudioData, 'm4a') :
-                    preAudioData;
-
-                const chunkSize = 
-                    file.type === 'audio/mpeg' ? 1 * 10 * 60 * 16000 : // 10 minutes of audio
-                    file.type === 'audio/wav' ? 2 * 10 * 60 * 16000 : // 10 minutes of audio
-                    // file.type === 'audio/ogg' ? 500000 : // ? minutes of audio
-                    2 * 10 * 60 * 16000; // 10 minutes of audio
-
-                if (i * chunkSize >= audioData.byteLength) {
-                    resolve(null);
-                    return;
-                }
-
-                const headerLength = 100;
-                const header = audioData.slice(0, headerLength); // Get the header of the file
-
-                const chunkStart = Math.max(i * chunkSize, headerLength);
-                const chunkEnd = Math.min((i + 1) * chunkSize, audioData.byteLength);
-                let chunk = audioData.slice(chunkStart, chunkEnd);
-
-                console.log('chunkStart', chunkStart, 'chunkEnd', chunkEnd, 'chunkSize', chunkSize, 'audioData.byteLength', audioData.byteLength);
-
-                // Hack per que no passi lo que el primer chunk posa que dura tot el fitxer
-                if (file.type === 'audio/mpeg') chunk = audioData.slice(chunkStart + 1, chunkEnd);
-                
-                resolve(new Blob([header, chunk], {type: 'audio/wav'}));
+            if (i * chunkSize >= audioData.byteLength) {
+                resolve(null);
+                return;
             }
 
-            reader.readAsArrayBuffer(file);
+            const headerLength = 100;
+            const header = audioData.slice(0, headerLength); // Get the header of the file
+
+            const chunkStart = Math.max(i * chunkSize, headerLength);
+            const chunkEnd = Math.min((i + 1) * chunkSize, audioData.byteLength);
+            let chunk = audioData.slice(chunkStart, chunkEnd);
+
+            console.log('chunkStart', chunkStart, 'chunkEnd', chunkEnd, 'chunkSize', chunkSize, 'audioData.byteLength', audioData.byteLength);
+
+            resolve(new Blob([header, chunk], {type: 'audio/wav'}));
         }).catch(err => {
             reject(err);
         });

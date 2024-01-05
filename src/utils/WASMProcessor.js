@@ -107,16 +107,17 @@ export class WASMProcessor {
                     const preAudioData = reader.result;
 
                     const audioData = 
-                        file.type === 'audio/mpeg' ? preAudioData :     // Already covered
                         file.type === 'audio/wav' ? preAudioData :      // Already covered
+                        file.type === 'audio/mpeg' ? await convertToWav(preAudioData, 'mp3') :
                         file.type === 'audio/ogg' ? await convertToWav(preAudioData, 'ogg') :
                         file.type === 'audio/flac' ? await convertToWav(preAudioData, 'flac') :
                         file.type === 'audio/aac' ? await convertToWav(preAudioData, 'aac') :
                         file.type === 'audio/x-m4a' ? await convertToWav(preAudioData, 'm4a') :
                         await convertToWav(preAudioData, 'unknown');
 
+                    await saveAudioToIndexedDB(audioData);
+
                     const asDataURL = dataURLfromArrayBuffer(audioData);
-                    await saveAudioToIndexedDB(asDataURL);
                     this.showFullAudio(asDataURL);
 
                     resolve(true);            
@@ -196,14 +197,14 @@ export class WASMProcessor {
     }
 
     async processNextAudio() {
+        setTimeout(() => this.changeState(5), 1000); // Àudio processat. Comença la transcripció...
+
         if (!this.instance) this.loadInstance();
 
         const audioFound = await this.loadAudioChunk()
         if (!audioFound) return;
 
         this.showAudioPart();
-
-        setTimeout(() => this.changeState(5), 1000); // Àudio processat. Comença la transcripció...
 
         const result = window.Module.full_default(
             this.instance, 
