@@ -14,7 +14,7 @@ const LanguageSelector = ({ processor, state }) => {
 
   return (
     <div>
-      <label htmlFor="language">Idioma:</label>
+      <label className='title' htmlFor="language">Idioma:</label>
 
       <select
         id="language"

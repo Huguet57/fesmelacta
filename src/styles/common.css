@@ -74,6 +74,7 @@ button.downloading {
     100% { background-color: rgb(76, 175, 80); }
 }
 
-label {
+label.title {
     font-weight: bold;
+    margin-right: 10px;
 }

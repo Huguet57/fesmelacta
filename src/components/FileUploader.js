@@ -21,7 +21,7 @@ const FileUploader = ({ processor, success, error, state }) => {
                 marginBottom: '20px',
             }}
         >
-            <label htmlFor="file">Fitxer d'àudio: </label>
+            <label className='title' htmlFor="file">Fitxer d'àudio: </label>
             <input
                 disabled={isDisabled}
                 type="file"
