@@ -1,8 +1,10 @@
 # Step 1: Build the React application
-FROM node:latest as build
+# Use a smaller base image
+FROM node:alpine as build
 WORKDIR /app
 COPY package.json /app
-RUN npm install
+# Install only production dependencies
+RUN npm install --only=production
 COPY . /app
 RUN npm run build
 
