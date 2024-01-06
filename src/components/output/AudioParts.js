@@ -63,7 +63,10 @@ function AudioParts({ processor, audioParts, state }) {
             }}
         >
             {
-                audioParts.map((audioPart, index) => (
+                audioParts
+                // TODO: Remove (?)
+                .filter((_, index) => index === audioParts.length - 1)
+                .map((audioPart, index) => (
                     <Part
                         key={index}
                         end={processor?.end || 1e8}
