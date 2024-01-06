@@ -51,7 +51,7 @@ button.downloading {
 }
 
 button.cancel {
-    background-color: #f44336;
+    background-color: #ff9b94;
 }
 
 @keyframes color-change {

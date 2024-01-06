@@ -83,7 +83,7 @@ function StateOutput({ state }) {
     }, [state]);
 
     React.useEffect(() => {
-        if (state === 7 && activateFinishAudio) {
+        if (state >= 7 && activateFinishAudio) {
             const audio = new Audio(doneSound);
             audio.play();
         }

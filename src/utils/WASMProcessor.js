@@ -104,7 +104,7 @@ export class WASMProcessor {
     }
 
     async kill() {
-        window?.Module["PTHREAD"]?.terminateAllThreads();
+        window?.Module["PThread"]?.terminateAllThreads();
     }
 
     async loadAudio() {
