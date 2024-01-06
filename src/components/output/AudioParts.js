@@ -44,7 +44,7 @@ function AudioParts({ processor, audioParts, state }) {
     useEffect(() => {
         if (processor) {
             setOffset(
-                processor.start + processor.audioOffset
+                Math.floor(processor.start + processor.audioOffset)
             );
         }
     }, [
