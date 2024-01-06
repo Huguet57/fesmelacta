@@ -1,4 +1,4 @@
-function SideBySide({ children, gap = 5, justifyContent = 'flex-start' }) {
+function SideBySide({ style={}, children, gap = 5, justifyContent = 'flex-start' }) {
     return (
         <div
             style={{
@@ -7,6 +7,7 @@ function SideBySide({ children, gap = 5, justifyContent = 'flex-start' }) {
                 alignItems: 'center',
                 gap: `${gap}px`,
                 justifyContent: justifyContent,
+                ...style,
             }}
         >
             {children}
