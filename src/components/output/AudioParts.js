@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { secondsToHHMMSS } from "../../utils/chunking";
 import SideBySide from "../extra/SideBySide";
 
-const Part = ({ end, offset, audioPart, last }) => {
+const Part = ({ end, offset, audioPart, last, state }) => {
     const nextOffset = Math.min(end, offset + 10 * 60);
 
     return (
@@ -19,7 +19,9 @@ const Part = ({ end, offset, audioPart, last }) => {
                 }}
             >
                 {
-                    last ? 'Transcivint part...' : 'Fet.'
+                    (last && state < 7) ? 'Transcivint part...' :
+                    (last || state === 8) ? 'Cancel·lat.' :
+                    'Fet.'
                 }
             </div>
             <div
@@ -67,7 +69,8 @@ function AudioParts({ processor, audioParts, state }) {
                         end={processor?.end || 1e8}
                         offset={offset}
                         audioPart={audioPart}
-                        last={state < 7 && index === audioParts.length - 1}
+                        last={index === audioParts.length - 1}
+                        state={state}
                     />
                 ))
             }
