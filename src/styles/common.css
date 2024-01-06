@@ -50,6 +50,10 @@ button.downloading {
     animation: color-change 3s infinite;
 }
 
+button.cancel {
+    background-color: #f44336;
+}
+
 @keyframes color-change {
     0% { background-color: rgb(76, 175, 80); }
     5% { background-color: rgb(73, 170, 77); }

@@ -103,6 +103,10 @@ export class WASMProcessor {
         });
     }
 
+    async kill() {
+        window?.Module["PTHREAD"]?.terminateAllThreads();
+    }
+
     async loadAudio() {
         return new Promise(async (resolve, reject) => {
             localforage.getItem('file').then(file => {

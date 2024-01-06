@@ -24,7 +24,7 @@ const AudioProcessor = () => {
         <div>
             <Header />
 
-            <ModelLoader state={state} processor={processor} success={() => setIsModelLoaded(true)} error={(err) => console.error(err)} />
+            <ModelLoader state={state} setState={setState} processor={processor} success={() => setIsModelLoaded(true)} error={(err) => console.error(err)} />
 
             {
                 state <= 3 && <>

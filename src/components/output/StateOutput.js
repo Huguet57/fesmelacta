@@ -21,6 +21,8 @@ export const printState = (state, verbose=false) => {
             return 'Transcripció en curs...';
         case 7:
             return 'Transcripció finalitzada.';
+        case 8:
+            return 'Transcripció cancel·lada.';
         default:
             return 'Desconegut';
     }

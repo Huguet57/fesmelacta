@@ -3,8 +3,9 @@ import { loadModelFromIndexedDB, saveModelToIndexedDB } from '../utils/indexedDB
 import { fetchModel, modelSizes } from '../utils/models';
 import ProgressBar from './model/ProgressBar';
 import localforage from 'localforage';
+import SideBySide from './extra/SideBySide';
 
-const ModelLoader = ({ processor, success, error, state }) => {
+const ModelLoader = ({ processor, success, error, state, setState }) => {
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [model, setModel] = useState(null);
@@ -14,6 +15,11 @@ const ModelLoader = ({ processor, success, error, state }) => {
   const [savedModels, setSavedModels] = useState({});
   
   const isDisabled = 3 < state && state < 7;
+
+  const cancel = () => {
+    processor?.kill();
+    setState(8);
+  }
 
   const loadModel = async (modelName) => {
     if (isDisabled) return;
@@ -90,14 +96,22 @@ const ModelLoader = ({ processor, success, error, state }) => {
   }
 
   return (
-    <div>
-      {/* <ModelLoaded loaded={loaded} modelName={model} /> */}
-      <button className={(model === 'base' ? 'selected' : '') + (downloading === 'base' ? 'downloading' : '')} onClick={() => loadModel('base')}>Transcripció ràpida{ !savedModels['base'] && <> (57 MB)</> }</button>
-      {/* <button className={(model === 'small' ? 'selected' : '') + (downloading === 'small' ? 'downloading' : '')} onClick={() => loadModel('small')}>Transcripció ràpida{ !savedModels['small'] && <> (190 MB)</> }</button> */}
-      <button className={(model === 'medium' ? 'selected' : '') + (downloading === 'medium' ? 'downloading' : '')} onClick={() => loadModel('medium')}>Transcripció de qualitat{ !savedModels['medium'] && <> (514 MB)</> }</button>
-
-      { (0 < progress && progress < 100) && <ProgressBar progress={progress} /> }
-    </div>
+    <SideBySide
+      justifyContent='space-between'
+    >
+      <div>
+        <button className={(model === 'base' ? 'selected' : '') + (downloading === 'base' ? 'downloading' : '')} onClick={() => loadModel('base')}>Transcripció ràpida{ !savedModels['base'] && <> (57 MB)</> }</button>
+        {/* <button className={(model === 'small' ? 'selected' : '') + (downloading === 'small' ? 'downloading' : '')} onClick={() => loadModel('small')}>Transcripció ràpida{ !savedModels['small'] && <> (190 MB)</> }</button> */}
+        <button className={(model === 'medium' ? 'selected' : '') + (downloading === 'medium' ? 'downloading' : '')} onClick={() => loadModel('medium')}>Transcripció de qualitat{ !savedModels['medium'] && <> (514 MB)</> }</button>
+        
+        { (0 < progress && progress < 100) && <ProgressBar progress={progress} /> }
+      </div>
+      {
+        (3 < state && state < 7) && <div>
+          <button className='cancel' onClick={cancel}>Para la transcripció</button>
+        </div>
+      }
+    </SideBySide>
   );
 }
 
