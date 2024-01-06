@@ -40,7 +40,6 @@ const Part = ({ end, offset, audioPart, last }) => {
 
 function AudioParts({ processor, audioParts, state }) {
     const [offset, setOffset] = useState(0);
-    const lastAudioPart = audioParts[audioParts.length - 1];
 
     useEffect(() => {
         if (processor) {
@@ -50,6 +49,8 @@ function AudioParts({ processor, audioParts, state }) {
         }
     }, [
         processor,
+        processor?.start,
+        processor?.audioOffset,
     ]);
 
 
