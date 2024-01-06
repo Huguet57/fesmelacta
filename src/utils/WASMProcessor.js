@@ -73,7 +73,7 @@ export class WASMProcessor {
         this.changeState(6); // Transcripció en curs...
 
         // Adjust the subtitle timings
-        const adjustedStr = this.adjustSubtitles(str, this.audioOffset);
+        const adjustedStr = this.adjustSubtitles(str, this.audioOffset + this.start);
         this.linesCallback(adjustedStr);
     }
 
