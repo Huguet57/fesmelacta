@@ -3,17 +3,24 @@ import { useRef, useState } from 'react';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { fetchFile, toBlobURL } from '@ffmpeg/util';
 
-export const dataURLfromArrayBuffer = (buffer) => {
-    const CHUNK_SIZE = 0x8000; // Arbitrary size
-    const array = new Uint8Array(buffer);
-    let base64 = '';
+export const dataURLfromArrayBuffer = async (buffer) => {
+    // Convert ArrayBuffer to Blob
+    const blob = new Blob([buffer], { type: 'audio/wav' });
 
-    for (let i = 0; i < array.length; i += CHUNK_SIZE) {
-        const chunk = array.subarray(i, i + CHUNK_SIZE);
-        base64 += String.fromCharCode.apply(null, chunk);
-    }
+    // Create a FileReader to read the Blob
+    const reader = new FileReader();
 
-    return 'data:audio/wav;base64,' + window.btoa(base64);
+    // Return a new Promise
+    return new Promise((resolve, reject) => {
+        // On successful read, resolve the Promise with the data URL
+        reader.onloadend = () => resolve(reader.result);
+
+        // On error, reject the Promise
+        reader.onerror = (e) => reject(e);
+
+        // Read the Blob as a data URL
+        reader.readAsDataURL(blob);
+    });
 };
 
 export const getAudioLength = async (file) => {
