@@ -4,9 +4,11 @@ import SideBySide from './extra/SideBySide';
 import { getAudioLength } from '../utils/chunking';
 
 export const secondsToHMS = (seconds) => {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds - (h * 3600)) / 60);
-    const s = seconds - (h * 3600) - (m * 60);
+    const flooredSeconds = Math.floor(seconds);
+
+    const h = Math.floor(flooredSeconds / 3600);
+    const m = Math.floor((flooredSeconds - (h * 3600)) / 60);
+    const s = flooredSeconds - (h * 3600) - (m * 60);
 
     return {
         h,
