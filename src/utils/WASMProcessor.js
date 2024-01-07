@@ -125,8 +125,8 @@ export class WASMProcessor {
 
                     await saveAudioToIndexedDB(audioData);
 
-                    // const asDataURL = await dataURLfromArrayBuffer(audioData);
-                    // this.showFullAudio(asDataURL);
+                    const asDataURL = await dataURLfromArrayBuffer(audioData);
+                    this.showFullAudio(asDataURL);
 
                     resolve(true);            
                 };
