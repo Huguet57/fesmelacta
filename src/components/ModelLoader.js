@@ -50,6 +50,7 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
               .then(model => {
                     processor?.setModel(model);
                     saveModelToIndexedDB(modelName, model);
+                    setSavedModels(prev => ({ ...prev, [modelName]: true }));
                     
                     setDownloading(null);
                     setLoading(false);
