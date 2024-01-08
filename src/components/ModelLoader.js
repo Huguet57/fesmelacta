@@ -77,14 +77,18 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
           // Check if 'small' model is already in localforage
           if (key.includes('small')) {
             setSavedModels(prev => ({ ...prev, small: true }));
-          
+          }
           // Check if 'medium' model is already in localforage
-          } else if (key.includes('medium')) {
+          else if (key.includes('medium')) {
             setSavedModels(prev => ({ ...prev, medium: true }));
-
+          }
           // Check if 'base' model is already in localforage
-          } else if (key.includes('base')) {
+          else if (key.includes('base')) {
             setSavedModels(prev => ({ ...prev, base: true }));
+          }
+          // Check if 'tiny' model is already in localforage
+          else if (key.includes('tiny')) {
+            setSavedModels(prev => ({ ...prev, tiny: true }));
           }
         })
       })
@@ -101,6 +105,7 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
       justifyContent='space-between'
     >
       <div>
+        <button className={(model === 'tiny' ? 'selected' : '') + (downloading === 'tiny' ? 'downloading' : '')} onClick={() => loadModel('tiny')}>Transcripció mòbil{ !savedModels['tiny'] && <> (30 MB)</> }</button>
         <button className={(model === 'base' ? 'selected' : '') + (downloading === 'base' ? 'downloading' : '')} onClick={() => loadModel('base')}>Transcripció ràpida{ !savedModels['base'] && <> (57 MB)</> }</button>
         {/* <button className={(model === 'small' ? 'selected' : '') + (downloading === 'small' ? 'downloading' : '')} onClick={() => loadModel('small')}>Transcripció ràpida{ !savedModels['small'] && <> (190 MB)</> }</button> */}
         <button className={(model === 'medium' ? 'selected' : '') + (downloading === 'medium' ? 'downloading' : '')} onClick={() => loadModel('medium')}>Transcripció de qualitat{ !savedModels['medium'] && <> (514 MB)</> }</button>

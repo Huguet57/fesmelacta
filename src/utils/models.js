@@ -1,10 +1,12 @@
 export const modelUrls = {
-    'base':    'https://whisper-cpp-models.s3.eu-west-3.amazonaws.com/ggml-model-whisper-base-q5_1.bin',
+    'tiny':     'https://whisper-cpp-models.s3.eu-west-3.amazonaws.com/ggml-model-whisper-tiny-q5_1.bin',
+    'base':     'https://whisper-cpp-models.s3.eu-west-3.amazonaws.com/ggml-model-whisper-base-q5_1.bin',
     'small':    'https://whisper-cpp-models.s3.eu-west-3.amazonaws.com/whisper-small-q5.bin',
     'medium':   'https://whisper-cpp-models.s3.eu-west-3.amazonaws.com/whisper-medium-q5.bin',
 };
 
 export const modelSizes = {
+    'tiny':     30,
     'base':     57,
     'small':    190,
     'medium':   514,
