@@ -20,6 +20,7 @@ const CheckIcon = () => (
 function TranscripcioOutput({ lines, state }) {
     const [filterBrackets, setFilterBrackets] = useState(null);
     const [copySuccess, setCopySuccess] = useState('');
+    const [hasUserScrolledFromBottom, setHasUserScrolledFromBottom] = useState(false);
     const textAreaRef = useRef(null);
 
     const handleCopyClick = () => {
@@ -50,9 +51,26 @@ function TranscripcioOutput({ lines, state }) {
         });
     }, []);
 
+    const handleScroll = () => {
+        const isAtBottomThreshold = 10;
+        const isAtBottom = textAreaRef.current.scrollHeight - textAreaRef.current.scrollTop <= textAreaRef.current.clientHeight + isAtBottomThreshold;
+        setHasUserScrolledFromBottom(!isAtBottom);
+    };
+
     useEffect(() => {
-        textAreaRef.current.scrollTop = textAreaRef.current.scrollHeight;
-    }, [lines]);
+        const textArea = textAreaRef.current;
+        textArea.addEventListener('scroll', handleScroll);
+
+        return () => {
+            textArea.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!hasUserScrolledFromBottom) {
+            textAreaRef.current.scrollTop = textAreaRef.current.scrollHeight;
+        }
+    }, [lines, hasUserScrolledFromBottom]);
 
     const filteredLines = lines
         .filter(line => line !== '')
