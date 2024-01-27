@@ -56,6 +56,21 @@ function Output({ state, setState, processor, isModelLoaded, isAudioLoaded }) {
         isAudioLoaded,
     ]);
 
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            if (state > 3 && state < 7) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [state]);
+
     return (
         <div>
             <StateOutput state={state} />
