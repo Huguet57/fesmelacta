@@ -9,6 +9,7 @@ import LanguageSelector from './components/model/LanguageSelector';
 import './styles/common.css';
 import SideBySide from './components/extra/SideBySide';
 import Credits from './components/extra/Credits';
+import FeedbackForm from './components/extra/FeedbackForm';
 
 const AudioProcessor = () => {
     const [isModelLoaded, setIsModelLoaded] = useState(false);
@@ -38,6 +39,8 @@ const AudioProcessor = () => {
             }
 
             <Output state={state} setState={setState} processor={processor} isModelLoaded={isModelLoaded} isAudioLoaded={isAudioLoaded} />
+            
+            <FeedbackForm />
             <Credits />
         </div>
     );
