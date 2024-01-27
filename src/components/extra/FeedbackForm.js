@@ -10,6 +10,9 @@ const FeedbackForm = () => {
             const api_key = atob("Y0ttajZmajU3RzJ5b3JmVXVhdndoajQwUHBMV3poYzhRNm03");
 
             try {
+                setSuggestion('');
+                setButtonText('Enviat!');
+
                 await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -19,8 +22,6 @@ const FeedbackForm = () => {
                     body: JSON.stringify({ message: suggestion })
                 });
 
-                setSuggestion('');
-                setButtonText('Enviat!');
                 setTimeout(() => setButtonText('Enviar feedback anònim'), 2000);
             } catch (error) {
                 console.error('Error sending feedback:', error);
