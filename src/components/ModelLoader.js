@@ -53,7 +53,7 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
               .then(model => {
                     processor?.setModel(modelName, model);
                     saveModelToIndexedDB(modelName, model);
-                    setSavedModels(prev => ({ ...prev, [modelName]: true }));
+                    setSavedModels(prev => ({ ...prev, [modelName]: model }));
                     
                     setDownloading(null);
                     setLoading(false);
