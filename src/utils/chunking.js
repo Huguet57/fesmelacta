@@ -116,6 +116,16 @@ const getIthChunk = async (i) => {
     });
 }
 
+const getBufferData = async (file) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            resolve(new Uint8Array(reader.result));
+        };
+        reader.readAsArrayBuffer(file);
+    });
+}
+
 const decodeAudioData = async (file) => {
     const kSampleRate = 16000;
 
@@ -145,7 +155,7 @@ const decodeAudioData = async (file) => {
 
                 offlineContext.startRendering().then(function(renderedBuffer) {
                     const chunkData = renderedBuffer.getChannelData(0);
-                    resolve([buf, chunkData]);
+                    resolve(chunkData);
                 });
             }, function(e) {
                 // console.log(e);
@@ -157,4 +167,4 @@ const decodeAudioData = async (file) => {
     });
 }
 
-export { getIthChunk, decodeAudioData };
+export { getIthChunk, decodeAudioData, getBufferData };
