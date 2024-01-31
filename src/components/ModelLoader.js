@@ -4,6 +4,15 @@ import { fetchModel, modelSizes } from '../utils/models';
 import ProgressBar from './model/ProgressBar';
 import localforage from 'localforage';
 import SideBySide from './extra/SideBySide';
+import {
+  AvailableModels,
+  InferenceSession,
+  SessionManager,
+  Segment,
+  DecodingOptionsBuilder,
+  initialize,
+  Task
+} from "whisper-turbo";
 
 const ModelLoader = ({ processor, success, error, state, setState }) => {
   const [loading, setLoading] = useState(false);
@@ -23,8 +32,10 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
 
   const loadModel = async (modelName) => {
     if (isDisabled) return;
+    if (!modelName) return;
 
     try {
+      const isGPUmodel = modelName.toLowerCase().includes('gpu');
       const model = await loadModelFromIndexedDB(modelName);
 
       if (model) {
@@ -46,23 +57,46 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
 
           setDownloading(modelName);
 
-          fetchModel(modelName, setProgress)
-              .then(model => {
-                    processor?.setModel(modelName, model);
-                    saveModelToIndexedDB(modelName, model);
-                    setSavedModels(prev => ({ ...prev, [modelName]: true }));
-                    
-                    setDownloading(null);
+          if (isGPUmodel) {
+            const manager = new SessionManager();
+            const loadResult = await manager.loadModel(
+                modelName,
+                () => {
                     setLoading(false);
                     setLoaded(true);
                     setModel(modelName);
-                    success();
-              })
-              .catch(err => {
-                    setDownloading(null);
-                    setLoading(false);
-                    error(err);
-                });
+
+                    saveModelToIndexedDB(modelName, true);  // Save a boolean to indicate that the model is saved
+                    setSavedModels(prev => ({ ...prev, [modelName]: true }));
+                },
+                (p) => setProgress(p)
+            );
+            if (loadResult.isErr) {
+                console.error(loadResult.error.message);
+            } else {
+                setDownloading(null);
+                processor?.setModel(modelName, loadResult.value);
+                success();
+            }
+          } else {
+            fetchModel(modelName, setProgress)
+                .then(model => {
+                      processor?.setModel(modelName, model);
+                      saveModelToIndexedDB(modelName, model);
+                      setSavedModels(prev => ({ ...prev, [modelName]: true }));
+                      
+                      setDownloading(null);
+                      setLoading(false);
+                      setLoaded(true);
+                      setModel(modelName);
+                      success();
+                })
+                .catch(err => {
+                      setDownloading(null);
+                      setLoading(false);
+                      error(err);
+                  });
+          }
       }
     } catch (err) {
       setLoading(false);

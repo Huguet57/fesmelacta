@@ -15,6 +15,10 @@ export class WASMProcessor {
             4;
         this.translate = false;
 
+        // GPU
+        this.isGPUEnabled = navigator.gpu ? true : false;
+        this.gpuSession = null;
+
         // Start and end
         this.start = null;
         this.end = null;
@@ -238,7 +242,10 @@ export class WASMProcessor {
     }
 
     async setModel(modelName, model) {
-        await this.storeModel(model);
+        const isGPUmodel = modelName.toLowerCase().includes('gpu');
+
+        if (isGPUmodel) this.gpuSession = model;
+        else await this.storeModel(model);
     }
 
     setLanguage(language) {
