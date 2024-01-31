@@ -90,6 +90,11 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
             setSavedModels(prev => ({ ...prev, base: true }));
           }
 
+          // Check if 'base-gpu' model is already in localforage
+          else if (key.includes('base-gpu')) {
+            setSavedModels(prev => ({ ...prev, 'base-gpu': true }));
+          }
+
           // Check if 'small-gpu' model is already in localforage
           else if (key.includes('small-gpu')) {
             setSavedModels(prev => ({ ...prev, 'small-gpu': true }));
@@ -115,7 +120,7 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
     >
       <div>
         { !processor?.isGPUEnabled && <button className={(model === 'base' ? 'selected' : '') + (downloading === 'base' ? 'downloading' : '')} onClick={() => loadModel('base')}>Transcripció ràpida{ !savedModels['base'] && <> (57 MB)</> }</button> }
-        { processor?.isGPUEnabled && <button className={(model === 'small-gpu' ? 'selected' : '') + (downloading === 'small-gpu' ? 'downloading' : '')} onClick={() => loadModel('small-gpu')}>🔥 Transcripció ràpida{ !savedModels['small-gpu'] && <> (299 MB)</> }</button> }
+        { processor?.isGPUEnabled && <button className={(model === 'base-gpu' ? 'selected' : '') + (downloading === 'base-gpu' ? 'downloading' : '')} onClick={() => loadModel('base-gpu')}>🔥 Transcripció ràpida{ !savedModels['base-gpu'] && <> (92 MB)</> }</button> }
         
         { !processor?.isGPUEnabled && <button className={(model === 'medium' ? 'selected' : '') + (downloading === 'medium' ? 'downloading' : '')} onClick={() => loadModel('medium')}>Transcripció de qualitat{ !savedModels['medium'] && <> (514 MB)</> }</button> }
         { processor?.isGPUEnabled && <button className={(model === 'medium-gpu' ? 'selected' : '') + (downloading === 'medium-gpu' ? 'downloading' : '')} onClick={() => loadModel('medium-gpu')}>🔥 Transcripció de qualitat{ !savedModels['medium-gpu'] && <> (927 MB)</> }</button> }
