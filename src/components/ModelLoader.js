@@ -4,15 +4,6 @@ import { fetchModel, modelSizes } from '../utils/models';
 import ProgressBar from './model/ProgressBar';
 import localforage from 'localforage';
 import SideBySide from './extra/SideBySide';
-import {
-  AvailableModels,
-  InferenceSession,
-  SessionManager,
-  Segment,
-  DecodingOptionsBuilder,
-  initialize,
-  Task
-} from "whisper-turbo";
 
 const ModelLoader = ({ processor, success, error, state, setState }) => {
   const [loading, setLoading] = useState(false);
