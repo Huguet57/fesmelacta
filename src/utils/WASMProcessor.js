@@ -111,6 +111,7 @@ export class WASMProcessor {
     }
 
     async kill() {
+        this?.gpuSession?.destroy();
         window?.Module["PThread"]?.terminateAllThreads();
     }
 
