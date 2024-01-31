@@ -237,7 +237,7 @@ export class WASMProcessor {
             });
     }
 
-    async setModel(model) {
+    async setModel(modelName, model) {
         await this.storeModel(model);
     }
 

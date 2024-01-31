@@ -28,7 +28,7 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
       const model = await loadModelFromIndexedDB(modelName);
 
       if (model) {
-            processor?.setModel(model);
+            processor?.setModel(modelName, model);
             saveModelToIndexedDB(modelName, model);
 
           setLoading(false);
@@ -48,7 +48,7 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
 
           fetchModel(modelName, setProgress)
               .then(model => {
-                    processor?.setModel(model);
+                    processor?.setModel(modelName, model);
                     saveModelToIndexedDB(modelName, model);
                     setSavedModels(prev => ({ ...prev, [modelName]: true }));
                     
