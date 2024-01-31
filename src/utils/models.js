@@ -2,6 +2,7 @@ export const modelUrls = {
     'base':         'https://whisper-cpp-models.s3.eu-west-3.amazonaws.com/ggml-model-whisper-base-q5_1.bin',
     'small':        'https://whisper-cpp-models.s3.eu-west-3.amazonaws.com/whisper-small-q5.bin',
     'medium':       'https://whisper-cpp-models.s3.eu-west-3.amazonaws.com/whisper-medium-q5.bin',
+    'small-gpu':    'https://whisper-cpp-models.s3.eu-west-3.amazonaws.com/gpu-models/small-q8g16.bin',
     'medium-gpu':   'https://whisper-cpp-models.s3.eu-west-3.amazonaws.com/gpu-models/medium-q8g16.bin',
 };
 
@@ -13,6 +14,8 @@ export const modelSizes = {
     'base':     57,
     'small':    190,
     'medium':   514,
+
+    'small-gpu': 299,
     'medium-gpu': 927,
 };
 

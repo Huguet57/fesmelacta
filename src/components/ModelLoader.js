@@ -90,8 +90,13 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
             setSavedModels(prev => ({ ...prev, base: true }));
           }
 
+          // Check if 'small-gpu' model is already in localforage
+          else if (key.includes('small-gpu')) {
+            setSavedModels(prev => ({ ...prev, 'small-gpu': true }));
+          }
+
           // Check if 'medium-gpu' model is already in localforage
-          if (key.includes('medium-gpu')) {
+          else if (key.includes('medium-gpu')) {
             setSavedModels(prev => ({ ...prev, 'medium-gpu': true }));
           }
         })
@@ -109,8 +114,8 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
       justifyContent='space-between'
     >
       <div>
-        <button className={(model === 'base' ? 'selected' : '') + (downloading === 'base' ? 'downloading' : '')} onClick={() => loadModel('base')}>Transcripció ràpida{ !savedModels['base'] && <> (57 MB)</> }</button>
-        {/* <button className={(model === 'small' ? 'selected' : '') + (downloading === 'small' ? 'downloading' : '')} onClick={() => loadModel('small')}>Transcripció ràpida{ !savedModels['small'] && <> (190 MB)</> }</button> */}
+        { !processor?.isGPUEnabled && <button className={(model === 'base' ? 'selected' : '') + (downloading === 'base' ? 'downloading' : '')} onClick={() => loadModel('base')}>Transcripció ràpida{ !savedModels['base'] && <> (57 MB)</> }</button> }
+        { processor?.isGPUEnabled && <button className={(model === 'small-gpu' ? 'selected' : '') + (downloading === 'small-gpu' ? 'downloading' : '')} onClick={() => loadModel('small-gpu')}>🔥 Transcripció ràpida{ !savedModels['small-gpu'] && <> (299 MB)</> }</button> }
         
         { !processor?.isGPUEnabled && <button className={(model === 'medium' ? 'selected' : '') + (downloading === 'medium' ? 'downloading' : '')} onClick={() => loadModel('medium')}>Transcripció de qualitat{ !savedModels['medium'] && <> (514 MB)</> }</button> }
         { processor?.isGPUEnabled && <button className={(model === 'medium-gpu' ? 'selected' : '') + (downloading === 'medium-gpu' ? 'downloading' : '')} onClick={() => loadModel('medium-gpu')}>🔥 Transcripció de qualitat{ !savedModels['medium-gpu'] && <> (927 MB)</> }</button> }
