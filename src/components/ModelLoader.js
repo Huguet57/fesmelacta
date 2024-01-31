@@ -39,6 +39,7 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
   const loadModel = async (modelName) => {
     if (isDisabled) return;
     if (!modelName) return;
+    if (downloading) return;
 
     try {
       const isGPUmodel = modelName.toLowerCase().includes('gpu');
