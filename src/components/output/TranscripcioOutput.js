@@ -56,7 +56,7 @@ function downloadSrt(lines, fileName) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = fileName + '.srt';
+    a.download = fileName.replace(/\.[^/.]+$/, "") + '.srt';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
