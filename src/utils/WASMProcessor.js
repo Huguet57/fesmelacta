@@ -44,7 +44,7 @@ export class WASMProcessor {
         this.changeState = null;
     }
 
-    async printAndCheck(str) {
+    async printAndCheck(str, last=false) {
         if (str === '') return;
 
         const finish_commands = [
@@ -64,7 +64,7 @@ export class WASMProcessor {
             return;
         }
 
-        if (finish_commands.some(cmd => str.includes(cmd))) {
+        if (last || finish_commands.some(cmd => str.includes(cmd))) {
             console.log(str);
 
             if (this.timeoutId) clearTimeout(this.timeoutId);
@@ -108,6 +108,27 @@ export class WASMProcessor {
             const adjustedEnd = convertToTimestamp(convertToMs(end) + offsetInSeconds);
             return `[${adjustedStart} --> ${adjustedEnd}]`;
         });
+    }
+
+    createTimestampSubtitles(start, end, offset) {
+        function convertSToMs(seconds) {
+            return Math.round(seconds * 1000);
+        }
+
+        function convertToTimestamp(milliseconds) {
+            const hours = Math.floor(milliseconds / 3600000);
+            const minutes = Math.floor((milliseconds % 3600000) / 60000);
+            const seconds = Math.floor((milliseconds % 60000) / 1000);
+            const ms = Math.floor(milliseconds % 1000);
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${ms.toString().padStart(3, '0')}`;
+        }
+
+        const offsetInSeconds = offset * 1000; // Convert offset to milliseconds
+
+        const adjustedStart = convertToTimestamp(convertSToMs(start) + offsetInSeconds);
+        const adjustedEnd = convertToTimestamp(convertSToMs(end) + offsetInSeconds);
+
+        return `[${adjustedStart} --> ${adjustedEnd}]`;
     }
 
     async kill() {
@@ -250,7 +271,13 @@ export class WASMProcessor {
                 false,
                 options,
                 (s) => {
-                    console.log(s)
+                    const timestamp = this.createTimestampSubtitles(s.start, s.stop, this.audioOffset + this.start);
+                    this.printAndCheck(timestamp + s.text, s.last);
+
+                    if (s.last) {
+                        this.changeState(7); // Transcripció finalitzada
+                        this.kill();
+                    }
                 }
             )
         
