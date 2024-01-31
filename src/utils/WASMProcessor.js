@@ -239,55 +239,57 @@ export class WASMProcessor {
         reader.readAsDataURL(this.audio);
     }
 
+    async processFullAudio() {
+        if (this.finished) return;
+        if (!this.gpuSession) return;
+
+        setTimeout(() => this.changeState(5), 1000); // Àudio processat. Comença la transcripció...
+
+        localforage.getItem('audio')
+            .then(async fullAudio => {
+                const audioData = new Uint8Array(fullAudio);
+
+                let builder = new DecodingOptionsBuilder();
+                builder = builder.setLanguage(this.language);
+                builder = builder.setSuppressTokens(Int32Array.from([-1]));
+                builder = builder.setTask(Task.Transcribe);
+                const options = builder.build();
+
+                await this.gpuSession.stream(
+                    audioData,
+                    false,
+                    options,
+                    (s) => {
+                        const timestamp = this.createTimestampSubtitles(s.start, s.stop, this.audioOffset + this.start);
+                        this.printAndCheck(timestamp + s.text, s.last);
+
+                        if (s.last) {
+                            this.changeState(7); // Transcripció finalitzada
+                            this.kill();
+                        }
+                    }
+                )
+            });
+    }
+
     async processNextAudio() {
         if (this.finished) return;
         setTimeout(() => this.changeState(5), 1000); // Àudio processat. Comença la transcripció...
 
-        if (!this.isGPUModel) {
-            if (!this.instance) this.loadInstance();
+        if (!this.instance) this.loadInstance();
 
-            const audioFound = await this.loadAudioChunk()
-            if (!audioFound) return;
+        const audioFound = await this.loadAudioChunk()
+        if (!audioFound) return;
 
-            this.showAudioPart();
+        this.showAudioPart();
 
-            const result = window.Module.full_default(
-                this.instance, 
-                this.chunkData, 
-                this.language, 
-                this.nthreads,
-                this.translate,
-            )
-        } else {
-            if (!this.gpuSession) return;
-
-            const audioFound = await this.loadAudioChunk()
-            if (!audioFound) return;
-
-            this.showAudioPart();
-
-            let builder = new DecodingOptionsBuilder();
-            builder = builder.setLanguage(this.language);
-            builder = builder.setSuppressTokens(Int32Array.from([-1]));
-            builder = builder.setTask(Task.Transcribe);
-            const options = builder.build();
-
-            await this.gpuSession.stream(
-                this.bufferData,
-                false,
-                options,
-                (s) => {
-                    const timestamp = this.createTimestampSubtitles(s.start, s.stop, this.audioOffset + this.start);
-                    this.printAndCheck(timestamp + s.text, s.last);
-
-                    if (s.last) {
-                        this.changeState(7); // Transcripció finalitzada
-                        this.kill();
-                    }
-                }
-            )
-        
-        }
+        const result = window.Module.full_default(
+            this.instance, 
+            this.chunkData, 
+            this.language, 
+            this.nthreads,
+            this.translate,
+        )
     }
 
     async process() {
@@ -295,10 +297,12 @@ export class WASMProcessor {
 
         this.loadAudio()
             .then(() => {
-                this.processNextAudio();
+                if (this.isGPUModel) this.processFullAudio();
+                else this.processNextAudio();
             })
             .catch(err => {
-                this.processNextAudio();
+                if (this.isGPUModel) this.processFullAudio();
+                else this.processNextAudio();
             });
     }
 
