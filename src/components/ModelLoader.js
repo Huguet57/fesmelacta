@@ -14,12 +14,6 @@ import {
   Task
 } from "whisper-turbo";
 
-const gpuModelsHashTable = {
-  'base-gpu': AvailableModels.WHISPER_BASE,
-  'small-gpu': AvailableModels.WHISPER_SMALL,
-  'medium-gpu': AvailableModels.WHISPER_MEDIUM,
-}
-
 const ModelLoader = ({ processor, success, error, state, setState }) => {
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -46,36 +40,13 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
       const model = await loadModelFromIndexedDB(modelName);
 
       if (model) {
-        if (isGPUmodel) {
-          const manager = new SessionManager();
-          const loadResult = await manager.loadModel(
-              gpuModelsHashTable[modelName],
-              () => {
-                  setLoading(false);
-                  setLoaded(true);
-                  setModel(modelName);
+        processor?.setModel(modelName, model);
+        saveModelToIndexedDB(modelName, model);
 
-                  saveModelToIndexedDB(modelName, true);  // Save a boolean to indicate that the model is saved
-                  setSavedModels(prev => ({ ...prev, [modelName]: true }));
-              },
-              (p) => setProgress(Math.round(p))
-          );
-          if (loadResult.isErr) {
-              console.error(loadResult.error.message);
-          } else {
-              setDownloading(null);
-              processor?.setModel(modelName, loadResult.value);
-              success();
-          }
-        } else {
-          processor?.setModel(modelName, model);
-          saveModelToIndexedDB(modelName, model);
-
-          setLoading(false);
-          setLoaded(true);
-          setModel(modelName);
-          success();
-        }
+        setLoading(false);
+        setLoaded(true);
+        setModel(modelName);
+        success();
       } else {
           const confirmed = window.confirm(
             'Estàs a punt de descarregar ' + (modelSizes?.[modelName] || '?') + ' MB de dades.\n' +
@@ -87,46 +58,23 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
 
           setDownloading(modelName);
 
-          if (isGPUmodel) {
-            const manager = new SessionManager();
-            const loadResult = await manager.loadModel(
-                gpuModelsHashTable[modelName],
-                () => {
+          fetchModel(modelName, setProgress)
+              .then(model => {
+                    processor?.setModel(modelName, model);
+                    saveModelToIndexedDB(modelName, model);
+                    setSavedModels(prev => ({ ...prev, [modelName]: true }));
+                    
+                    setDownloading(null);
                     setLoading(false);
                     setLoaded(true);
                     setModel(modelName);
-
-                    saveModelToIndexedDB(modelName, true);  // Save a boolean to indicate that the model is saved
-                    setSavedModels(prev => ({ ...prev, [modelName]: true }));
-                },
-                (p) => setProgress(Math.round(p))
-            );
-            if (loadResult.isErr) {
-                console.error(loadResult.error.message);
-            } else {
-                setDownloading(null);
-                processor?.setModel(modelName, loadResult.value);
-                success();
-            }
-          } else {
-            fetchModel(modelName, setProgress)
-                .then(model => {
-                      processor?.setModel(modelName, model);
-                      saveModelToIndexedDB(modelName, model);
-                      setSavedModels(prev => ({ ...prev, [modelName]: true }));
-                      
-                      setDownloading(null);
-                      setLoading(false);
-                      setLoaded(true);
-                      setModel(modelName);
-                      success();
-                })
-                .catch(err => {
-                      setDownloading(null);
-                      setLoading(false);
-                      error(err);
-                  });
-          }
+                    success();
+              })
+              .catch(err => {
+                    setDownloading(null);
+                    setLoading(false);
+                    error(err);
+                });
       }
     } catch (err) {
       setLoading(false);
@@ -173,9 +121,8 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
         <button className={(model === 'base' ? 'selected' : '') + (downloading === 'base' ? 'downloading' : '')} onClick={() => loadModel('base')}>Transcripció ràpida{ !savedModels['base'] && <> (57 MB)</> }</button>
         {/* <button className={(model === 'small' ? 'selected' : '') + (downloading === 'small' ? 'downloading' : '')} onClick={() => loadModel('small')}>Transcripció ràpida{ !savedModels['small'] && <> (190 MB)</> }</button> */}
         
-        {/* { !processor?.isGPUEnabled && <button className={(model === 'medium' ? 'selected' : '') + (downloading === 'medium' ? 'downloading' : '')} onClick={() => loadModel('medium')}>Transcripció de qualitat{ !savedModels['medium'] && <> (514 MB)</> }</button> }
-        { processor?.isGPUEnabled && <button className={(model === 'medium-gpu' ? 'selected' : '') + (downloading === 'medium-gpu' ? 'downloading' : '')} onClick={() => loadModel('medium-gpu')}>🔥 Transcripció de qualitat{ !savedModels['medium-gpu'] && <> (927 MB)</> }</button> } */}
-        <button className={(model === 'medium' ? 'selected' : '') + (downloading === 'medium' ? 'downloading' : '')} onClick={() => loadModel('medium')}>Transcripció de qualitat{ !savedModels['medium'] && <> (514 MB)</> }</button>
+        { !processor?.isGPUEnabled && <button className={(model === 'medium' ? 'selected' : '') + (downloading === 'medium' ? 'downloading' : '')} onClick={() => loadModel('medium')}>Transcripció de qualitat{ !savedModels['medium'] && <> (514 MB)</> }</button> }
+        { processor?.isGPUEnabled && <button className={(model === 'medium-gpu' ? 'selected' : '') + (downloading === 'medium-gpu' ? 'downloading' : '')} onClick={() => loadModel('medium-gpu')}>🔥 Transcripció de qualitat{ !savedModels['medium-gpu'] && <> (927 MB)</> }</button> }
 
         { (0 < progress && progress < 100) && <ProgressBar progress={progress} /> }
       </div>

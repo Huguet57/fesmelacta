@@ -2,6 +2,8 @@ import localforage from "localforage";
 import { readNextChunkFromIndexedDB, saveAudioToIndexedDB } from "./indexedDB";
 import { convertToWav, dataURLfromArrayBuffer } from "./chunking";
 import { DecodingOptionsBuilder, Task, initialize } from "whisper-turbo";
+import * as whisper from "whisper-webgpu";
+import { fetchTokenizer } from "./models";
 
 export class WASMProcessor {
     constructor() {
@@ -266,7 +268,7 @@ export class WASMProcessor {
             builder = builder.setTask(Task.Transcribe);
             const options = builder.build();
 
-            await this.gpuSession.transcribe(
+            await this.gpuSession.stream(
                 this.bufferData,
                 false,
                 options,
@@ -300,7 +302,16 @@ export class WASMProcessor {
         this.isGPUModel = modelName.toLowerCase().includes('gpu');
 
         if (this.isGPUModel) {
-            this.gpuSession = model;
+            const TOKENIZER = await fetchTokenizer('gpu');
+
+            await whisper.default();
+            const builder = new whisper.SessionBuilder();
+            const session = await builder
+                .setModel(model)
+                .setTokenizer(TOKENIZER)
+                .build()
+            
+            this.gpuSession = session;
             await initialize();
         } else {
             await this.storeModel(model);
