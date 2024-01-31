@@ -50,20 +50,20 @@ function convertToSrt(lines) {
     return srtContent;
 }
 
-function downloadSrt(lines) {
+function downloadSrt(lines, fileName) {
     const srtContent = convertToSrt(lines);
     const blob = new Blob([srtContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'subtitles.srt';
+    a.download = fileName + '.srt';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 }
 
-function TranscripcioOutput({ lines, state }) {
+function TranscripcioOutput({ fileName, lines, state }) {
     const [filterBrackets, setFilterBrackets] = useState(null);
     const [copySuccess, setCopySuccess] = useState('');
     const [hasUserScrolledFromBottom, setHasUserScrolledFromBottom] = useState(false);
@@ -178,7 +178,7 @@ function TranscripcioOutput({ lines, state }) {
                             gap: '2px',
                             padding: '8px 8px',
                         }}
-                        onClick={() => downloadSrt(lines)}
+                        onClick={() => downloadSrt(lines, fileName)}
                     >
                         <DownloadIcon />
                         Exporta a .srt

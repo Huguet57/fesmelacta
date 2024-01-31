@@ -5,7 +5,7 @@ import FullAudio from "./output/FullAudio";
 import TranscripcioOutput from "./output/TranscripcioOutput";
 import AudioParts from "./output/AudioParts";
 
-function Output({ state, setState, processor, isModelLoaded, isAudioLoaded }) {
+function Output({ fileName, state, setState, processor, isModelLoaded, isAudioLoaded }) {
     const [lines, setLines] = useState([]);
     const [audioParts, setAudioParts] = useState([]);
     const [fullAudio, setFullAudio] = useState(null);
@@ -77,7 +77,7 @@ function Output({ state, setState, processor, isModelLoaded, isAudioLoaded }) {
             <FullAudio fullAudio={fullAudio} />
             {/* <AudioParts processor={processor} audioParts={audioParts} state={state} /> */}
 
-            <TranscripcioOutput lines={lines} state={state} />
+            <TranscripcioOutput fileName={fileName} lines={lines} state={state} />
         </div>
     );
 }

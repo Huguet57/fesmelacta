@@ -16,6 +16,7 @@ const AudioProcessor = () => {
     const [isAudioLoaded, setIsAudioLoaded] = useState(false);
     const [processor, setProcessor] = useState(null);
     const [state, setState] = useState(0);
+    const [fileName, setFileName] = useState(null);
 
     useEffect(() => {
         setProcessor(new WASMProcessor());
@@ -29,7 +30,7 @@ const AudioProcessor = () => {
 
             {
                 state <= 3 && <>
-                    <FileUploader isAudioLoaded={isAudioLoaded} state={state} processor={processor} success={() => setIsAudioLoaded(true)} error={(err) => console.error(err)} />
+                    <FileUploader setFileName={setFileName} isAudioLoaded={isAudioLoaded} state={state} processor={processor} success={() => setIsAudioLoaded(true)} error={(err) => console.error(err)} />
                     
                     <SideBySide>
                         <LanguageSelector state={state}  processor={processor} />
@@ -38,7 +39,7 @@ const AudioProcessor = () => {
                 </>
             }
 
-            <Output state={state} setState={setState} processor={processor} isModelLoaded={isModelLoaded} isAudioLoaded={isAudioLoaded} />
+            <Output fileName={fileName} state={state} setState={setState} processor={processor} isModelLoaded={isModelLoaded} isAudioLoaded={isAudioLoaded} />
             
             <FeedbackForm />
             <Credits />

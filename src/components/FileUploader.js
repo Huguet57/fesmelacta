@@ -17,7 +17,7 @@ export const secondsToHMS = (seconds) => {
     };
 };
 
-const FileUploader = ({ isAudioLoaded, processor, success, error, state }) => {
+const FileUploader = ({ setFileName, isAudioLoaded, processor, success, error, state }) => {
     const [start, setStart] = useState({
         h: 0,
         m: 0,
@@ -41,6 +41,7 @@ const FileUploader = ({ isAudioLoaded, processor, success, error, state }) => {
         const file = event.target.files[0];
         saveFileToDB(file);
         setEnd(secondsToHMS(await getAudioLength(file)));
+        setFileName(file.name);
     }
 
     useEffect(() => {
