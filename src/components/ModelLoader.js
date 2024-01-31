@@ -45,13 +45,36 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
       const model = await loadModelFromIndexedDB(modelName);
 
       if (model) {
-            processor?.setModel(modelName, model);
-            saveModelToIndexedDB(modelName, model);
+        if (isGPUmodel) {
+          const manager = new SessionManager();
+          const loadResult = await manager.loadModel(
+              gpuModelsHashTable[modelName],
+              () => {
+                  setLoading(false);
+                  setLoaded(true);
+                  setModel(modelName);
+
+                  saveModelToIndexedDB(modelName, true);  // Save a boolean to indicate that the model is saved
+                  setSavedModels(prev => ({ ...prev, [modelName]: true }));
+              },
+              (p) => setProgress(Math.round(p))
+          );
+          if (loadResult.isErr) {
+              console.error(loadResult.error.message);
+          } else {
+              setDownloading(null);
+              processor?.setModel(modelName, loadResult.value);
+              success();
+          }
+        } else {
+          processor?.setModel(modelName, model);
+          saveModelToIndexedDB(modelName, model);
 
           setLoading(false);
           setLoaded(true);
           setModel(modelName);
-            success();
+          success();
+        }
       } else {
           const confirmed = window.confirm(
             'Estàs a punt de descarregar ' + (modelSizes?.[modelName] || '?') + ' MB de dades.\n' +
