@@ -47,7 +47,7 @@ export class WASMProcessor {
         this.changeState = null;
     }
 
-    async printAndCheck(str, last=false) {
+    async printAndCheck(str, last=false, already_offsetted=false) {
         if (str === '') return;
         if (this.finished) return;
 
@@ -84,7 +84,7 @@ export class WASMProcessor {
         this.changeState(6); // Transcripció en curs...
 
         // Adjust the subtitle timings
-        const adjustedStr = this.adjustSubtitles(str, this.audioOffset);
+        const adjustedStr = this.adjustSubtitles(str, already_offsetted ? 0 : this.audioOffset + this.start);
         this.linesCallback(adjustedStr);
     }
 
@@ -260,8 +260,8 @@ export class WASMProcessor {
                     false,
                     options,
                     (s) => {
-                        const timestamp = this.createTimestampSubtitles(s.start, s.stop, this.audioOffset);
-                        this.printAndCheck(timestamp + s.text, s.last);
+                        const timestamp = this.createTimestampSubtitles(s.start, s.stop, this.audioOffset + this.start);
+                        this.printAndCheck(timestamp + s.text, s.last, true);
 
                         if (s.last) {
                             this.changeState(7); // Transcripció finalitzada
