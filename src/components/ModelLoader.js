@@ -14,6 +14,12 @@ import {
   Task
 } from "whisper-turbo";
 
+const gpuModelsHashTable = {
+  'base-gpu': AvailableModels.WHISPER_BASE,
+  'small-gpu': AvailableModels.WHISPER_SMALL,
+  'medium-gpu': AvailableModels.WHISPER_MEDIUM,
+}
+
 const ModelLoader = ({ processor, success, error, state, setState }) => {
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -60,7 +66,7 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
           if (isGPUmodel) {
             const manager = new SessionManager();
             const loadResult = await manager.loadModel(
-                modelName,
+                gpuModelsHashTable[modelName],
                 () => {
                     setLoading(false);
                     setLoaded(true);
@@ -120,6 +126,11 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
           } else if (key.includes('base')) {
             setSavedModels(prev => ({ ...prev, base: true }));
           }
+
+          // Check if 'medium-gpu' model is already in localforage
+          if (key.includes('medium-gpu')) {
+            setSavedModels(prev => ({ ...prev, 'medium-gpu': true }));
+          }
         })
       })
   }, [
@@ -138,6 +149,7 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
         <button className={(model === 'base' ? 'selected' : '') + (downloading === 'base' ? 'downloading' : '')} onClick={() => loadModel('base')}>Transcripció ràpida{ !savedModels['base'] && <> (57 MB)</> }</button>
         {/* <button className={(model === 'small' ? 'selected' : '') + (downloading === 'small' ? 'downloading' : '')} onClick={() => loadModel('small')}>Transcripció ràpida{ !savedModels['small'] && <> (190 MB)</> }</button> */}
         <button className={(model === 'medium' ? 'selected' : '') + (downloading === 'medium' ? 'downloading' : '')} onClick={() => loadModel('medium')}>Transcripció de qualitat{ !savedModels['medium'] && <> (514 MB)</> }</button>
+        <button className={(model === 'medium-gpu' ? 'selected' : '') + (downloading === 'medium-gpu' ? 'downloading' : '')} onClick={() => loadModel('medium-gpu')}>[GPU] Transcripció de qualitat{ !savedModels['medium-gpu'] && <> (774 MB)</> }</button>
         
         { (0 < progress && progress < 100) && <ProgressBar progress={progress} /> }
       </div>
