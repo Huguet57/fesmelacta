@@ -75,7 +75,7 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
                     saveModelToIndexedDB(modelName, true);  // Save a boolean to indicate that the model is saved
                     setSavedModels(prev => ({ ...prev, [modelName]: true }));
                 },
-                (p) => setProgress(p)
+                (p) => setProgress(Math.round(p))
             );
             if (loadResult.isErr) {
                 console.error(loadResult.error.message);
