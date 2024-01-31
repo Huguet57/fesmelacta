@@ -9,7 +9,7 @@ export const modelSizes = {
     'base':     57,
     'small':    190,
     'medium':   514,
-    'medium-gpu': 774,
+    'medium-gpu': 927,
 };
 
 
