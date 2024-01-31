@@ -78,30 +78,30 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
       .then(keys => {
         keys.forEach(key => {
           // Check if 'small' model is already in localforage
-          if (key.includes('small')) {
+          if (key === 'small') {
             setSavedModels(prev => ({ ...prev, small: true }));
           
           // Check if 'medium' model is already in localforage
-          } else if (key.includes('medium')) {
+          } else if (key === 'medium') {
             setSavedModels(prev => ({ ...prev, medium: true }));
 
           // Check if 'base' model is already in localforage
-          } else if (key.includes('base')) {
+          } else if (key === 'base') {
             setSavedModels(prev => ({ ...prev, base: true }));
           }
 
           // Check if 'base-gpu' model is already in localforage
-          else if (key.includes('base-gpu')) {
+          else if (key === 'base-gpu') {
             setSavedModels(prev => ({ ...prev, 'base-gpu': true }));
           }
 
           // Check if 'small-gpu' model is already in localforage
-          else if (key.includes('small-gpu')) {
+          else if (key === 'small-gpu') {
             setSavedModels(prev => ({ ...prev, 'small-gpu': true }));
           }
 
           // Check if 'medium-gpu' model is already in localforage
-          else if (key.includes('medium-gpu')) {
+          else if (key === 'medium-gpu') {
             setSavedModels(prev => ({ ...prev, 'medium-gpu': true }));
           }
         })

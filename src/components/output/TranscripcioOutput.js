@@ -36,7 +36,7 @@ function convertToSrt(lines) {
             // Extract timecodes and subtitle text
             const match = line.match(/\[(.*?)\] (.*)/);
             if (match && match.length === 3) {
-                const timecode = match[1].replace(/,/g, '.');
+                const timecode = match[1].replace(/\./g, ',');
                 const subtitleText = match[2];
 
                 // Append to SRT content
