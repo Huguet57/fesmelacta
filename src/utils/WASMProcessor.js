@@ -7,6 +7,7 @@ export class WASMProcessor {
         this.audioOffset = 0;
         this.instance = null;
         this.chunkData = null;
+        this.bufferData = null;
         this.audio = null;
         this.language = 'ca';
         this.nthreads = navigator.hardwareConcurrency ?
@@ -142,13 +143,14 @@ export class WASMProcessor {
     async loadAudioChunk() {
         return new Promise((resolve, reject) => {
             readNextChunkFromIndexedDB()
-                .then(async ([chunkAudio, chunkData]) => {
+                .then(async ([chunkAudio, bufferData, chunkData]) => {
                     if (!chunkData) {
                         this.changeState(7); // Transcripció finalitzada
                         resolve(false);
                     }
 
                     this.audio = chunkAudio;
+                    this.bufferData = bufferData;
                     this.chunkData = chunkData;
                     resolve(true);
                 })

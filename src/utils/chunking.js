@@ -145,7 +145,7 @@ const decodeAudioData = async (file) => {
 
                 offlineContext.startRendering().then(function(renderedBuffer) {
                     const chunkData = renderedBuffer.getChannelData(0);
-                    resolve(chunkData);
+                    resolve([buf, chunkData]);
                 });
             }, function(e) {
                 // console.log(e);

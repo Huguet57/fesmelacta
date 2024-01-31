@@ -50,8 +50,8 @@ const saveFileToIndexedDB = async (file) => {
 const readNextChunkFromIndexedDB = async () => {
     try {
         const chunk = await getIthChunk(currentChunkIndex++);
-        const chunkData = await decodeAudioData(chunk);
-        return [chunk, chunkData];
+        const [bufferData, channelData] = await decodeAudioData(chunk);
+        return [chunk, bufferData, channelData];
     } catch (err) {
         // console.error('Error reading chunk from IndexedDB', err);
         return [null, null];
