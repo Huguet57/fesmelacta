@@ -93,7 +93,7 @@ export function convertToWav(audioData, type, start=null, end=null) {
 const getIthChunk = async (i) => {
     return new Promise((resolve, reject) => {
         localforage.getItem('audio').then(async audioData => {
-            const chunkSize = 2 * 1 * 60 * 16000; // 1 minute of audio at 16kHz
+            const chunkSize = 2 * 10 * 60 * 16000; // 10 minutes of audio at 16kHz
 
             if (i * chunkSize >= audioData.byteLength) {
                 resolve(null);
