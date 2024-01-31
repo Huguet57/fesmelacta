@@ -17,6 +17,7 @@ export class WASMProcessor {
             Math.max(1, Math.floor(navigator.hardwareConcurrency * 0.8)) :
             4;
         this.translate = false;
+        this.finished = false;
 
         // GPU
         this.isGPUEnabled = navigator.gpu ? true : false;
@@ -48,6 +49,7 @@ export class WASMProcessor {
 
     async printAndCheck(str, last=false) {
         if (str === '') return;
+        if (this.finished) return;
 
         const finish_commands = [
             'whisper_print_timings:',
@@ -134,8 +136,9 @@ export class WASMProcessor {
     }
 
     async kill() {
-        this?.gpuSession?.destroy();
+        // this?.gpuSession?.destroy();
         window?.Module["PThread"]?.terminateAllThreads();
+        this.finished = true;
     }
 
     async loadAudio() {
@@ -237,6 +240,7 @@ export class WASMProcessor {
     }
 
     async processNextAudio() {
+        if (this.finished) return;
         setTimeout(() => this.changeState(5), 1000); // Àudio processat. Comença la transcripció...
 
         if (!this.isGPUModel) {
