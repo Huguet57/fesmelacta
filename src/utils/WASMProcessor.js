@@ -1,6 +1,7 @@
 import localforage from "localforage";
 import { readNextChunkFromIndexedDB, saveAudioToIndexedDB } from "./indexedDB";
 import { convertToWav, dataURLfromArrayBuffer } from "./chunking";
+import { DecodingOptionsBuilder, Task, initialize } from "whisper-turbo";
 
 export class WASMProcessor {
     constructor() {
@@ -18,6 +19,7 @@ export class WASMProcessor {
         // GPU
         this.isGPUEnabled = navigator.gpu ? true : false;
         this.gpuSession = null;
+        this.isGPUModel = false;
 
         // Start and end
         this.start = null;
@@ -213,20 +215,45 @@ export class WASMProcessor {
     async processNextAudio() {
         setTimeout(() => this.changeState(5), 1000); // Àudio processat. Comença la transcripció...
 
-        if (!this.instance) this.loadInstance();
+        if (!this.isGPUModel) {
+            if (!this.instance) this.loadInstance();
 
-        const audioFound = await this.loadAudioChunk()
-        if (!audioFound) return;
+            const audioFound = await this.loadAudioChunk()
+            if (!audioFound) return;
 
-        this.showAudioPart();
+            this.showAudioPart();
 
-        const result = window.Module.full_default(
-            this.instance, 
-            this.chunkData, 
-            this.language, 
-            this.nthreads,
-            this.translate,
-        )
+            const result = window.Module.full_default(
+                this.instance, 
+                this.chunkData, 
+                this.language, 
+                this.nthreads,
+                this.translate,
+            )
+        } else {
+            if (!this.gpuSession) return;
+
+            const audioFound = await this.loadAudioChunk()
+            if (!audioFound) return;
+
+            this.showAudioPart();
+
+            let builder = new DecodingOptionsBuilder();
+            builder = builder.setLanguage(this.language);
+            builder = builder.setSuppressTokens(Int32Array.from([-1]));
+            builder = builder.setTask(Task.Transcribe);
+            const options = builder.build();
+
+            await this.gpuSession.transcribe(
+                this.bufferData,
+                false,
+                options,
+                (s) => {
+                    console.log(s)
+                }
+            )
+        
+        }
     }
 
     async process() {
@@ -242,10 +269,14 @@ export class WASMProcessor {
     }
 
     async setModel(modelName, model) {
-        const isGPUmodel = modelName.toLowerCase().includes('gpu');
+        this.isGPUModel = modelName.toLowerCase().includes('gpu');
 
-        if (isGPUmodel) this.gpuSession = model;
-        else await this.storeModel(model);
+        if (this.isGPUModel) {
+            this.gpuSession = model;
+            await initialize();
+        } else {
+            await this.storeModel(model);
+        }
     }
 
     setLanguage(language) {
