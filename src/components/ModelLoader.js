@@ -129,7 +129,7 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
 
         {
           model === 'medium' ? <p style={{ marginBottom: 0 }}>Lenta però segura. És la d'abans.</p> :
-          model === 'mediu-gpu' ? <p style={{ marginBottom: 0 }}>Ràpida però experimental. Potser els temps no són exactes i diu que hi ha música quan no n'hi ha.</p> :
+          model === 'medium-gpu' ? <p style={{ marginBottom: 0 }}>Ràpida però experimental. Potser els temps no són exactes i diu que hi ha música quan no n'hi ha.</p> :
           null
         }
       </div>
