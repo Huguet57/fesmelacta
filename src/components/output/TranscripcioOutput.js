@@ -63,6 +63,57 @@ function downloadSrt(lines, fileName) {
     URL.revokeObjectURL(url);
 }
 
+const filterOutBrackets = (text) => {
+    const regex = /^\[\d\d:\d\d:\d\d\.\d\d\d --> \d\d:\d\d:\d\d\.\d\d\d\]\s*/;
+    return text.replace(regex, '');
+};
+
+const extractTimestampsPart = (text) => {
+    const regex = /^\[(\d\d:\d\d:\d\d\.\d\d\d) --> (\d\d:\d\d:\d\d\.\d\d\d)\]\s*/;
+    const matches = text.match(regex);
+
+    if (matches) {
+        // Return the full match including brackets and arrow
+        return matches[0];
+    } else {
+        // Return null or an appropriate value to indicate no match was found
+        return '';
+    }
+};
+
+    
+
+function hideHallucinations(lines) {
+    const timestampsFromLines = lines
+        .map(extractTimestampsPart)
+
+    const textFromLines = lines
+        .map(filterOutBrackets)
+
+    const processedLines = [];
+    let repeatCount = 1;
+    for (let i = 0; i < textFromLines.length; i++) {
+        if (i > 0 && textFromLines[i] === textFromLines[i - 1]) {
+            repeatCount++;
+            if (repeatCount === 4) {
+                processedLines[processedLines.length - 2] = '🎵';
+                processedLines[processedLines.length - 1] = '🎵';
+            }
+
+            if (repeatCount >= 4) {
+                processedLines.push('🎵');
+            }
+        } else {
+            repeatCount = 1;
+            processedLines.push(textFromLines[i]);
+        }
+    }
+    
+    return processedLines.map((line, i) => {
+        return timestampsFromLines[i] + line;
+    });
+}
+
 function TranscripcioOutput({ fileName, lines, state }) {
     const [filterBrackets, setFilterBrackets] = useState(null);
     const [copySuccess, setCopySuccess] = useState('');
@@ -77,11 +128,6 @@ function TranscripcioOutput({ fileName, lines, state }) {
         }, (err) => {
             console.error('Error copying text: ', err);
         });
-    };
-
-    const filterOutBrackets = (text) => {
-        const regex = /^\[\d\d:\d\d:\d\d\.\d\d\d --> \d\d:\d\d:\d\d\.\d\d\d\]\s*/;
-        return text.replace(regex, '');
     };
 
     const handleFilterChange = (e) => {
@@ -118,7 +164,7 @@ function TranscripcioOutput({ fileName, lines, state }) {
         }
     }, [lines, hasUserScrolledFromBottom]);
 
-    const filteredLines = lines
+    const filteredLines = hideHallucinations(lines)
         .filter(line => line !== '')
         .map(line => (filterBrackets ? filterOutBrackets(line) : line))
         .join('\n');
