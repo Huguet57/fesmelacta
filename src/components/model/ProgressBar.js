@@ -10,7 +10,7 @@ const ProgressBar = ({ progress }) => {
 
     const fillerStyles = {
         height: '100%',
-        width: `${progress.toFixed(1)}%`,
+        width: `${Math.round(progress)}%`,
         backgroundColor: '#4CAF50', // A green shade similar to the button in the screenshot
         textAlign: 'center',
         transition: 'width 0.5s ease-in-out',
