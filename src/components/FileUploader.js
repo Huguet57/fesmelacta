@@ -98,18 +98,6 @@ const FileUploader = ({ setFileName, isAudioLoaded, processor, success, error, s
                         onChange={handleFileChange}
                         accept="audio/*"
                     />
-
-                    <div
-                        style={{
-                            fontSize: '12px',
-                            color: '#666',
-                            marginTop: '10px',
-                            display: 'flex',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <em>Ja es poden penjar àudios d'hores de llargada!</em>
-                    </div>
                 </div>
 
                 {
