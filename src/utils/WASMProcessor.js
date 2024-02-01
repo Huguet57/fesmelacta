@@ -254,6 +254,7 @@ export class WASMProcessor {
                 builder = builder.setBestOf(5);
                 builder = builder.setBeamSize(5);
                 builder = builder.setSuppressTokens(Int32Array.from([]));
+                builder = builder.setSuppressBlank(false);
                 builder = builder.setTask(Task.Transcribe);
                 const options = builder.build();
 
