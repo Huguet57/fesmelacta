@@ -251,7 +251,7 @@ export class WASMProcessor {
 
                 let builder = new DecodingOptionsBuilder();
                 builder = builder.setLanguage(this.language);
-                builder = builder.setSuppressTokens(Int32Array.from([-1]));
+                builder = builder.setSuppressTokens(Int32Array.from([]));
                 builder = builder.setTask(Task.Transcribe);
                 const options = builder.build();
 
