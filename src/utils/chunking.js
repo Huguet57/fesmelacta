@@ -31,7 +31,8 @@ export const getAudioLength = async (file) => {
             resolve(duration);
         };
         audio.onerror = function() {
-            reject();
+            console.error('Audio error:', audio.error);
+            reject(`Error loading audio. Error Code: ${audio.error.code}`);
         }
     });
 }

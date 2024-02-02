@@ -40,8 +40,14 @@ const FileUploader = ({ setFileName, isAudioLoaded, processor, success, error, s
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
         saveFileToDB(file);
-        setEnd(secondsToHMS(await getAudioLength(file)));
-        setFileName(file.name);
+        setFileName(file?.name || "gravació");
+
+        try {
+            const audioLength = await getAudioLength(file);
+            setEnd(secondsToHMS(audioLength));
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     useEffect(() => {
