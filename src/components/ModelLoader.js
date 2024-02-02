@@ -122,16 +122,16 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
         { true && <button className={(model === 'base' ? 'selected' : '') + (downloading === 'base' ? 'downloading' : '')} onClick={() => loadModel('base')}>Transcripció ràpida{ !savedModels['base'] && <> (57 MB)</> }</button> }
         {/* { processor?.isGPUEnabled && <button className={(model === 'base-gpu' ? 'selected' : '') + (downloading === 'base-gpu' ? 'downloading' : '')} onClick={() => loadModel('base-gpu')}>🔥 Transcripció ràpida{ !savedModels['base-gpu'] && <> (92 MB)</> }</button> } */}
         
-        { !processor?.isGPUEnabled && <button className={(model === 'medium' ? 'selected' : '') + (downloading === 'medium' ? 'downloading' : '')} onClick={() => loadModel('medium')}>🐌 Transcripció de qualitat{ !savedModels['medium'] && <> (514 MB)</> }</button> }
+        { true && <button className={(model === 'medium' ? 'selected' : '') + (downloading === 'medium' ? 'downloading' : '')} onClick={() => loadModel('medium')}>🐌 Transcripció de qualitat{ !savedModels['medium'] && <> (514 MB)</> }</button> }
         { processor?.isGPUEnabled && <button className={(model === 'medium-gpu' ? 'selected' : '') + (downloading === 'medium-gpu' ? 'downloading' : '')} onClick={() => loadModel('medium-gpu')}>🔥 Transcripció de qualitat{ !savedModels['medium-gpu'] && <> (927 MB)</> }</button> }
 
         { (0 < progress && progress < 100) && <ProgressBar progress={progress} /> }
 
-        {/* {
+        {
           model === 'medium' ? <p style={{ marginBottom: 0 }}>Lenta però segura. És la d'abans.</p> :
-          model === 'medium-gpu' ? <p style={{ marginBottom: 0 }}>Ràpida però experimental. Potser els temps no són exactes i diu que hi ha música quan no n'hi ha.</p> :
+          model === 'medium-gpu' ? <p style={{ marginBottom: 0 }}>Ràpida però experimental. Potser s'encalla i diu que hi ha música quan no n'hi ha.</p> :
           null
-        } */}
+        }
       </div>
       {
         (3 < state && state < 7) && <div>
