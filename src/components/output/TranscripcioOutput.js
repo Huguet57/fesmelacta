@@ -224,7 +224,7 @@ function TranscripcioOutput({ fileName, lines, state }) {
                             gap: '2px',
                             padding: '8px 8px',
                         }}
-                        onClick={() => downloadSrt(lines, fileName)}
+                        onClick={() => downloadSrt(hideHallucinations(lines), fileName)}
                     >
                         <DownloadIcon />
                         Exporta a .srt
