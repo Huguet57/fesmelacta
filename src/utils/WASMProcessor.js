@@ -168,7 +168,7 @@ export class WASMProcessor {
                         file.type === 'audio/flac' ? await convertToWav(preAudioData, 'flac', this.start, this.end) :
                         file.type === 'audio/aac' ? await convertToWav(preAudioData, 'aac', this.start, this.end) :
                         file.type === 'audio/x-m4a' ? await convertToWav(preAudioData, 'm4a', this.start, this.end) :
-                        await convertToWav(preAudioData, 'unknown');
+                        await convertToWav(preAudioData, 'unknown', this.start, this.end);
 
                     await saveAudioToIndexedDB(audioData);
 

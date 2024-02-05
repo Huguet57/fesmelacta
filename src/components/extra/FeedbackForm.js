@@ -34,7 +34,7 @@ const FeedbackForm = () => {
             <h4>Volem el teu feedback!</h4>
             <textarea
                 id="suggestionBox"
-                placeholder="Tens suggerències? Què és el que més et molesta? Si us plau, donan's feedback per poder millorar l'aplicatiu..."
+                placeholder="Tens suggerències? Què és el que més et molesta? Si us plau, dona'ns feedback per poder millorar l'aplicatiu..."
                 style={{ marginTop: 0, width: '95%', height: '50px', marginBottom: '10px', padding: '10px', borderRadius: '5px', border: '1px solid #ccc', fontSize: '12px' }}
                 value={suggestion}
                 onChange={e => setSuggestion(e.target.value)}
