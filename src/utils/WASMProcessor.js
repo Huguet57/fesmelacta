@@ -28,7 +28,7 @@ export class WASMProcessor {
         if ('gpu' in navigator) {
             navigator.gpu.requestAdapter()
                 .then(adapter => {
-                    if (adapter) adapter.requestDevice()
+                    if (adapter) return adapter.requestDevice()
                     else throw new Error('No adapter found');
                 })
                 .then(device => this.isGPUEnabled = device ? true : false)
