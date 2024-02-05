@@ -72,13 +72,15 @@ export function convertToWav(audioData, type, start=null, end=null) {
             await loadFFmpeg();
 
             const uint8Array = new Uint8Array(audioData);
+            const rnnData = await fetchFile('https://whisper-cpp-models.s3.eu-west-3.amazonaws.com/filters/cb.rnnn');
 
             await ffmpeg.writeFile(`audio.${type}`, uint8Array);
+            await ffmpeg.writeFile('cb.rnnn', rnnData);
 
             if (end) {
-                await ffmpeg.exec(['-i', `audio.${type}`, '-ss', secondsToHHMMSS(start || 0), '-to', secondsToHHMMSS(end), '-ac', '1', '-ar', '16000', '-f', 'wav', '-map_metadata', '-1', 'audio.wav']);
+                await ffmpeg.exec(['-i', `audio.${type}`, '-ss', secondsToHHMMSS(start || 0), '-to', secondsToHHMMSS(end), '-af', 'arnndn=m=cb.rnnn', '-ac', '1', '-ar', '16000', '-f', 'wav', '-map_metadata', '-1', 'audio.wav']);
             } else {
-                await ffmpeg.exec(['-i', `audio.${type}`, '-ss', secondsToHHMMSS(start || 0), '-ac', '1', '-ar', '16000', '-f', 'wav', '-map_metadata', '-1', 'audio.wav']);
+                await ffmpeg.exec(['-i', `audio.${type}`, '-ss', secondsToHHMMSS(start || 0), '-af', 'arnndn=m=cb.rnnn', '-ac', '1', '-ar', '16000', '-f', 'wav', '-map_metadata', '-1', 'audio.wav']);
             }
 
             const converted_uint8Array = await ffmpeg.readFile('audio.wav');
