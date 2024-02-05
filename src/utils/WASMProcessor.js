@@ -27,7 +27,7 @@ export class WASMProcessor {
         // Check if GPU is enabled
         if ('gpu' in navigator) {
             navigator.gpu.requestAdapter()
-                .then(adapter => this.isGPUEnabled = true)
+                .then(adapter => this.isGPUEnabled = adapter ? true : false)
                 .catch(err => this.isGPUEnabled = false);
         } else {
             this.isGPUEnabled = false;
