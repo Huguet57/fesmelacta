@@ -21,6 +21,7 @@ const Part = ({ end, offset, audioPart, last, state }) => {
                 {
                     (last && state < 7) ? 'Transcivint part...' :
                     (last && state === 8) ? 'Cancel·lat.' :
+                    (last && state === 9) ? 'Error en la transcripció.' :
                     'Fet.'
                 }
             </div>

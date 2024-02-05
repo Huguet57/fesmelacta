@@ -23,6 +23,8 @@ export const printState = (state, verbose=false) => {
             return 'Transcripció finalitzada.';
         case 8:
             return 'Transcripció cancel·lada.';
+        case 9:
+            return 'Error en la transcripció.';
         default:
             return 'Desconegut';
     }

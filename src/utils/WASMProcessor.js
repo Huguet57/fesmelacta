@@ -271,20 +271,25 @@ export class WASMProcessor {
                 builder = builder.setTask(Task.Transcribe);
                 const options = builder.build();
 
-                await this.gpuSession.stream(
-                    audioData,
-                    false,
-                    options,
-                    (s) => {
-                        const timestamp = this.createTimestampSubtitles(s.start, s.stop, this.audioOffset + this.start);
-                        this.printAndCheck(timestamp + s.text, s.last, true);
+                try {
+                    await this.gpuSession.stream(
+                        audioData,
+                        false,
+                        options,
+                        (s) => {
+                            const timestamp = this.createTimestampSubtitles(s.start, s.stop, this.audioOffset + this.start);
+                            this.printAndCheck(timestamp + s.text, s.last, true);
 
-                        if (s.last) {
-                            this.changeState(7); // Transcripció finalitzada
-                            this.kill();
+                            if (s.last) {
+                                this.changeState(7); // Transcripció finalitzada
+                                this.kill();
+                            }
                         }
-                    }
-                )
+                    )
+                } catch (err) {
+                    this.changeState(9); // Error en la transcripció
+                    this.kill();
+                }
             });
     }
 
