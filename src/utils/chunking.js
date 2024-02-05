@@ -76,9 +76,9 @@ export function convertToWav(audioData, type, start=null, end=null) {
             await ffmpeg.writeFile(`audio.${type}`, uint8Array);
 
             if (end) {
-                await ffmpeg.exec(['-i', `audio.${type}`, '-ss', secondsToHHMMSS(start || 0), '-to', secondsToHHMMSS(end), '-ac', '1', '-ar', '16000', '-f', 'wav', '-map_metadata', '-1', 'audio.wav']);
+                await ffmpeg.exec(['-i', `audio.${type}`, '-ss', secondsToHHMMSS(start || 0), '-to', secondsToHHMMSS(end), '-af', 'afftdn=nf=-20', '-ac', '1', '-ar', '16000', '-f', 'wav', '-map_metadata', '-1', 'audio.wav']);
             } else {
-                await ffmpeg.exec(['-i', `audio.${type}`, '-ss', secondsToHHMMSS(start || 0), '-ac', '1', '-ar', '16000', '-f', 'wav', '-map_metadata', '-1', 'audio.wav']);
+                await ffmpeg.exec(['-i', `audio.${type}`, '-ss', secondsToHHMMSS(start || 0), '-af', 'afftdn=nf=-20', '-ac', '1', '-ar', '16000', '-f', 'wav', '-map_metadata', '-1', 'audio.wav']);
             }
 
             const converted_uint8Array = await ffmpeg.readFile('audio.wav');
