@@ -140,8 +140,8 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
         { !isGPUEnabled && <button className={(model === 'base' ? 'selected' : '') + (downloading === 'base' ? 'downloading' : '')} onClick={() => loadModel('base')}>Transcripció ràpida{ !savedModels['base'] && <> (57 MB)</> }</button> }
         { isGPUEnabled && <button className={(model === 'base-gpu' ? 'selected' : '') + (downloading === 'base-gpu' ? 'downloading' : '')} onClick={() => loadModel('base-gpu')}>Transcripció ràpida{ !savedModels['base-gpu'] && <> (92 MB)</> }</button> }
         
-        { !isGPUEnabled && <button className={(model === 'medium' ? 'selected' : '') + (downloading === 'medium' ? 'downloading' : '')} onClick={() => loadModel('medium')}>🐌 Transcripció de qualitat{ !savedModels['medium'] && <> (514 MB)</> }</button> }
-        { isGPUEnabled && <button className={(model === 'medium-gpu' ? 'selected' : '') + (downloading === 'medium-gpu' ? 'downloading' : '')} onClick={() => loadModel('medium-gpu')}>Transcripció de qualitat{ !savedModels['medium-gpu'] && <> (927 MB)</> }</button> }
+        { true && <button className={(model === 'medium' ? 'selected' : '') + (downloading === 'medium' ? 'downloading' : '')} onClick={() => loadModel('medium')}>🐌 Transcripció de qualitat{ !savedModels['medium'] && <> (514 MB)</> }</button> }
+        { isGPUEnabled && <button className={(model === 'medium-gpu' ? 'selected' : '') + (downloading === 'medium-gpu' ? 'downloading' : '')} onClick={() => loadModel('medium-gpu')}>🔥 Transcripció de qualitat{ !savedModels['medium-gpu'] && <> (927 MB)</> }</button> }
 
         { (0 < progress && progress < 100) && <ProgressBar progress={progress} /> }
 
@@ -149,7 +149,7 @@ const ModelLoader = ({ processor, success, error, state, setState }) => {
           model === 'base' ? <p style={{ marginBottom: 0 }}>Per transcripcions ràpides, per veure ràpid de què va la conversa.</p> :
           model === 'base-gpu' ? <p style={{ marginBottom: 0 }}>Per transcripcions ràpides, per veure ràpid de què va la conversa. Potser diu que hi ha música quan no n'hi ha.</p> :
           model === 'medium' ? <p style={{ marginBottom: 0 }}>Lenta però segura. Transcripció d'alta qualitat.</p> :
-          model === 'medium-gpu' ? <p style={{ marginBottom: 0 }}>Transcripció d'alta qualitat a temps real. Potser diu que hi ha música quan no n'hi ha.</p> :
+          model === 'medium-gpu' ? <p style={{ marginBottom: 0 }}>Transcripció d'alta qualitat més ràpida. Potser diu que hi ha música quan no n'hi ha.</p> :
           null
         }
       </div>
